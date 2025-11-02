@@ -1,0 +1,10 @@
+@import "./CommonSection.css";
+
+.section-container.settings {
+  background-color: #f7f7ff;
+  border-top: 5px solid #3b82f6;
+}
+
+.section-container.settings .section-title {
+  color: #1d4ed8;
+}

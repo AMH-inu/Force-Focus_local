@@ -1,0 +1,61 @@
+/* 전체 페이지 스타일 */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+  background-color: #ffffff;
+  color: #222;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* 제목 */
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* 버튼 공통 스타일 */
+button {
+  display: inline-block;
+  margin: 0 0.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.1s ease;
+  color: #fff;
+}
+
+/* 각 버튼 색상 구분 */
+button:first-of-type {
+  background-color: #3b82f6; /* 파랑 */
+}
+
+button:first-of-type:hover {
+  background-color: #2563eb;
+}
+
+button:last-of-type {
+  background-color: #ef4444; /* 빨강 */
+}
+
+button:last-of-type:hover {
+  background-color: #dc2626;
+}
+
+/* 클릭 시 살짝 눌리는 효과 */
+button:active {
+  transform: scale(0.97);
+}
+
+/* 반응형 정렬용 래퍼 (선택적으로 사용할 수 있음) */
+#root {
+  text-align: center;
+}

@@ -1,0 +1,135 @@
+/* ================================
+   MenuBar - 토글 버튼 스타일 업데이트
+   ================================ */
+
+:root {
+  --menu-bg: #f8f4f4;
+  --menu-text: #111111;
+  --menu-hover-bg: #f3f4f6;
+  --menu-hover-text: #2563eb;
+  --menu-active-bg: #e0e7ff;
+  --menu-active-text: #1d4ed8;
+  --menu-border: #e5e7eb;
+}
+
+/* 전체 메뉴바 */
+.menu-bar {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  width: 20%;
+  height: calc(100vh - 64px);
+  background-color: var(--menu-bg);
+  color: var(--menu-text);
+  border-right: 1px solid var(--menu-border);
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+  z-index: 900;
+}
+
+.menu-bar.collapsed {
+  width: 60px;
+}
+
+/* 상단 헤더 */
+.menu-bar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--menu-border);
+  background-color: #e0e1e2;
+}
+
+.menu-bar__title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--menu-text);
+}
+
+/* 토글 버튼 */
+.menu-bar__toggle {
+  background-color: #cccccc;   /* 완전 투명 */
+  border: none;                    /* 테두리 제거 */
+  font-size: 1.1rem;               /* 약간 크게 */
+  font-weight: 700;                /* 굵게 표시 */
+  cursor: pointer;
+  color: var(--menu-text);
+  padding: 4px 8px;
+  transition: all 0.2s ease;
+}
+
+.menu-bar__toggle:hover {
+  background-color: rgba(0, 0, 0, 0.05); /* hover 시만 아주 연한 회색 */
+  color: var(--menu-hover-text);
+  border-radius: 6px;
+  transform: scale(1.05);
+}
+
+/* 메뉴 리스트 */
+.menu-bar__nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 6px;
+}
+
+.menu-bar__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* 개별 메뉴 항목 */
+.menu-bar__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border-bottom: 1px solid var(--menu-border);
+}
+
+.menu-bar__icon {
+  font-size: 1.2rem;
+}
+
+.menu-bar__label {
+  font-size: 1rem;
+  font-weight: 500;
+  user-select: none;
+}
+
+.menu-bar__item:hover {
+  background-color: var(--menu-hover-bg);
+  color: var(--menu-hover-text);
+}
+
+.menu-bar__item.active {
+  background-color: var(--menu-active-bg);
+  color: var(--menu-active-text);
+  font-weight: 700;
+  box-shadow: inset 4px 0 0 var(--menu-active-text);
+}
+
+/* 접힘 상태 */
+.menu-bar.collapsed .menu-bar__label {
+  display: none;
+}
+
+/* 다크 모드 */
+.dark .menu-bar {
+  --menu-bg: #0b1220;
+  --menu-text: #f3f4f6;
+  --menu-hover-bg: #1f2937;
+  --menu-hover-text: #60a5fa;
+  --menu-active-bg: #1e3a8a;
+  --menu-active-text: #93c5fd;
+  --menu-border: #1f2937;
+}

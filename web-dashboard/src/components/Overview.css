@@ -1,0 +1,148 @@
+/* ================================
+   Overview 전체 레이아웃
+================================= */
+.overview-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* 왼쪽 2, 오른쪽 1 비율 */
+  gap: 16px;
+  width: 100%;
+  height: 100%;
+  min-height: calc(100vh - 50px);
+  padding: 24px 32px;
+  box-sizing: border-box;
+  background-color: #f9fafc;
+}
+
+/* ================================
+   왼쪽 일정 영역
+================================= */
+.overview-left {
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f7fb;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* 상단 버튼 줄 */
+.overview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* 보기 버튼 */
+.view-buttons button {
+  background-color: #e0e7ff;
+  border: none;
+  color: #1e3a8a;
+  font-weight: 600;
+  margin-right: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.view-buttons button:hover {
+  background-color: #c7d2fe;
+}
+
+/* 추가/삭제 버튼 */
+.action-buttons button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.add-btn {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.add-btn:hover {
+  background-color: #2563eb;
+}
+
+.delete-btn {
+  background-color: #ef4444;
+  color: #fff;
+  margin-left: 6px;
+}
+
+.delete-btn:hover {
+  background-color: #dc2626;
+}
+
+/* 시간표 영역 */
+.schedule-area {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 12px;
+  overflow: hidden;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.schedule-area h4 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.schedule-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  background-color: #f1f5f9;
+  border-radius: 6px;
+}
+
+/* ================================
+   오른쪽 카드 영역
+================================= */
+.overview-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  flex: 1;
+  background-color: #f5f7fb;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.card h4 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.card p {
+  font-size: 0.95rem;
+  color: #374151;
+  line-height: 1.5;
+}
+
+
+/* ================================
+   반응형 (태블릿 이하)
+================================= */
+@media (max-width: 1024px) {
+  .overview-container {
+    grid-template-columns: 1fr;
+  }
+}
