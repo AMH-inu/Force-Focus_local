@@ -7,7 +7,29 @@ use active_win_pos_rs::get_active_window; // 활성 창 정보를 가져오는 �
 use std::path::PathBuf; // active-win-pos-rs::ActiveWindow 구조체 필드에 PathBuf가 포함
 
 use sysinfo::{System};
-use std::sync::Mutex;
+use std::sync::{Mutex, Arc};
+
+use rdev::{listen, Event, EventType};
+use std::thread;
+
+
+
+
+// --- 공유 상태 관리 ---
+// Mutex<System>만 포함하며, System 인스턴스를 공유 상태로 관리합니다.
+pub struct SysinfoState(pub Mutex<System>);
+
+// 사용자 입력 통계 추적을 위한 공유 상태
+// 앱 시작 시 한 번 초기화되어 계속 사용되므로 Arc로 공유됩니다.
+#[derive(Debug, Default, Clone, Serialize)] 
+pub struct InputStats {
+    pub total_input_events: u64, // 총 입력 이벤트 수
+    pub last_input_timestamp_ms: u64, // 마지막 입력 이벤트 발생 시점 (밀리초)
+    pub start_monitoring_timestamp_ms: u64, // 모니터링 시작 시점 (밀리초)
+}
+
+pub type InputStatsArcMutex = Arc<Mutex<InputStats>>;
+
 
 // --- 1. 활성 창 정보 관련 데이터 모델 및 명령어 ---
 
@@ -85,9 +107,6 @@ pub struct ProcessSummary {
 }
 
 
-// Mutex<System>만 포함하며, System 인스턴스를 공유 상태로 관리합니다.
-pub struct SysinfoState(pub Mutex<System>);
-
 // 시스템의 모든 실행 중인 프로세스 요약 정보를 가져오는 Tauri Command
 #[command]
 pub fn get_all_processes_summary(sys_state: State<'_, SysinfoState>) -> Result<Vec<ProcessSummary>, String> {
@@ -112,5 +131,16 @@ pub fn get_all_processes_summary(sys_state: State<'_, SysinfoState>) -> Result<V
 // --- 3. (향후 추가될) 스크린샷 관련 데이터 모델 및 명령어 ---
 // (현재 비어 있음)
 
-// --- 4. (향후 추가될) 사용자 입력 및 유휴 시간 관련 데이터 모델 및 명령어 ---
-// (현재 비어 있음)
+
+
+
+// --- 4. 사용자 입력 및 유휴 시간 관련 데이터 모델 및 명령어 ---
+
+// 현재까지의 사용자 입력 빈도 통계를 반환하는 Command
+#[command]
+pub fn get_input_frequency_stats(input_stats_arc_mutex: State<'_, InputStatsArcMutex>) -> Result<InputStats, String> {
+    // input_stats_arc_mutex는 직접 Arc<Mutex<InputStats>>의 참조 가짐.
+    // .lock().unwrap()을 호출하여 MutexGuard를 얻고, 내부 데이터를 클론
+    let stats = input_stats_arc_mutex.lock().unwrap();
+    Ok((*stats).clone())
+}

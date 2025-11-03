@@ -11,12 +11,17 @@ function App() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
     setGreetMsg(await invoke("greet", { name }));
   }
+  
+  // -------- Test 코드 -----------------
+  // 에러 발생 시 UI에 표시하기 위한 상태
+  const [error, setError] = useState<string | null>(null);
 
   // 모든 프로세스 요약 정보 관련 상태
   const [processesSummary, setProcessesSummary] = useState<any[]>([]);
   const [processesError, setProcessesError] = useState<string | null>(null);
+  
 
-  // -------- Test 코드 -----------------
+
   // 1. 활성 창 정보 테스트 
   useEffect(() => {
     invoke('get_current_active_window_info')
@@ -36,6 +41,24 @@ function App() {
         setProcessesError(err.toString());
       });
   }, []);
+
+  // 3. 사용자 입력 빈도 통계 테스트 (주기적으로 업데이트)
+  useEffect(() => {
+    console.log('--- Testing get_input_frequency_stats (every 2 seconds) ---');
+    const intervalId = setInterval(() => {
+      invoke('get_input_frequency_stats')
+        .then((res) => {
+          console.log('Input Frequency Stats:', res);
+          setError(null); // 성공 시 에러 초기화
+        })
+        .catch((err) => {
+          console.error('Error getting Input Frequency Stats:', err);
+          setError(`입력 빈도 통계 에러: ${err}`);
+        });
+    }, 2000); // 2초마다 갱신
+
+    return () => clearInterval(intervalId); // 컴포넌트 언마운트 시 인터벌 정리
+  }, []); // 컴포넌트 마운트 시 한 번만 실행
 
 
 
