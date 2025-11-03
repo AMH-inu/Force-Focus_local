@@ -6,6 +6,8 @@ use std::time::{SystemTime, UNIX_EPOCH}; // 타임스탬프 생성을 위해 필
 use active_win_pos_rs::get_active_window; // 활성 창 정보를 가져오는 함수
 use std::path::PathBuf; // active-win-pos-rs::ActiveWindow 구조체 필드에 PathBuf가 포함
 
+use sysinfo::{System};
+use std::sync::Mutex;
 
 // --- 1. 활성 창 정보 관련 데이터 모델 및 명령어 ---
 
@@ -71,8 +73,41 @@ pub fn get_current_active_window_info() -> Result<ActiveWindowInfo, String> {
     }
 }
 
-// --- 2. (향후 추가될) 시스템 상태 관련 데이터 모델 및 명령어 ---
-// (현재 비어 있음)
+// --- 2. 시스템 상태 관련 데이터 모델 및 명령어 ---
+
+// 모든 프로세스에 대한 요약 정보를 담을 Rust 구조체
+// 이 구조체는 웹 프론트엔드로 전송될 것이므로 Serialize/Deserialize 트레이트를 파생합니다.
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ProcessSummary {
+    pub name: String,            // 프로세스의 이름 (예: "chrome", "notepad.exe")
+    pub start_time_unix_s: u64,  // 프로세스 시작 시점의 Unix 타임스탬프 (초 단위)
+
+}
+
+
+// Mutex<System>만 포함하며, System 인스턴스를 공유 상태로 관리합니다.
+pub struct SysinfoState(pub Mutex<System>);
+
+// 시스템의 모든 실행 중인 프로세스 요약 정보를 가져오는 Tauri Command
+#[command]
+pub fn get_all_processes_summary(sys_state: State<'_, SysinfoState>) -> Result<Vec<ProcessSummary>, String> {
+    // SysinfoState가 Mutex<System>만 가지므로 sys_state.0.lock()으로 접근합니다.
+    let mut sys_guard = sys_state.0.lock().unwrap();
+
+    // 시스템 정보 새로 고침
+    // sysinfo::System::refresh_all()은 프로세스 목록을 포함한 대부분의 시스템 정보를 갱신합니다.
+    sys_guard.refresh_all();
+
+    let mut processes_summary = Vec::new();
+    // sys_guard.processes()는 (Pid, &Process) 형태의 Iterator를 반환합니다.
+    for (_pid, process) in sys_guard.processes() {
+        processes_summary.push(ProcessSummary {
+            name: process.name().to_string_lossy().into_owned(), // &OsStr을 String으로 안전하게 변환
+            start_time_unix_s: process.start_time(),
+        });
+    }
+    Ok(processes_summary)
+}
 
 // --- 3. (향후 추가될) 스크린샷 관련 데이터 모델 및 명령어 ---
 // (현재 비어 있음)

@@ -12,12 +12,34 @@ function App() {
     setGreetMsg(await invoke("greet", { name }));
   }
 
-  // test 코드
+  // 모든 프로세스 요약 정보 관련 상태
+  const [processesSummary, setProcessesSummary] = useState<any[]>([]);
+  const [processesError, setProcessesError] = useState<string | null>(null);
+
+  // -------- Test 코드 -----------------
+  // 1. 활성 창 정보 테스트 
   useEffect(() => {
     invoke('get_current_active_window_info')
       .then((res) => console.log('Active Window Info:', res))
       .catch((err) => console.error('Error:', err));
   }, []);
+
+  // 2. 모든 프로세스 요약 정보 테스트
+  useEffect(() => {
+    invoke('get_all_processes_summary')
+      .then((res) => {
+        console.log('All Processes Summary:', res);
+        setProcessesSummary(res as any);
+      })
+      .catch((err) => {
+        console.error('Error getting all processes summary:', err);
+        setProcessesError(err.toString());
+      });
+  }, []);
+
+
+
+  
 
 
   return (

@@ -14,15 +14,15 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
 
-        .manage(SysinfoState(
-            Mutex::new(System::new_all()), // System::new_all()로 시스템 정보 초기화
+        .manage(commands::SysinfoState( // commands::SysinfoState로 경로 명시
+            Mutex::new(System::new_all()),
         ))
 
 
         .invoke_handler(tauri::generate_handler![
             greet,
             commands::get_current_active_window_info,
-            
+            commands::get_all_processes_summary,
             ])
 
         .run(tauri::generate_context!())
