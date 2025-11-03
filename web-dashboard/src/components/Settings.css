@@ -1,10 +1,205 @@
-@import "./CommonSection.css";
+/* ✅ 기존 스타일 유지 + 팝업 추가 */
 
-.section-container.settings {
-  background-color: #f7f7ff;
-  border-top: 5px solid #3b82f6;
+.settings-layout {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 40px);
+  background: #f3f4f6;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-.section-container.settings .section-title {
-  color: #1d4ed8;
+.side-menu {
+  width: 200px;
+  background: #e5e7eb;
+  padding: 20px 12px;
+  border-right: 1px solid #d1d5db;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.side-menu li {
+  font-size: 0.95rem;
+  color: #374151;
+  padding: 10px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 6px;
+  transition: all 0.2s ease;
+}
+
+.side-menu li:hover {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.side-menu li.active {
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+}
+
+/* 오른쪽 콘텐츠 */
+.main-content {
+  flex: 1;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background: #f9fafb;
+  overflow-y: auto;
+}
+
+.settings-header {
+  background: transparent;      /* 🔹 배경을 투명하게 변경 */
+  border-radius: 0;             /* 🔹 배경 상자 느낌 제거 */
+  padding: 8px 0 6px 4px;       /* 🔹 위아래 여백 최소화 */
+  margin-bottom: 6px;           /* 🔹 아래 간격 줄이기 */
+  box-shadow: none;             /* 🔹 그림자 제거 */
+}
+
+.settings-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  text-align: left;             /* 🔹 왼쪽 정렬 유지 */
+}
+
+/* 구분선 (제목 아래 얇게 표시) */
+.settings-divider {
+  width: 100%;
+  height: 1.5px;
+  background-color: #d1d5db;
+  margin: 6px 0 18px 0;         /* 🔹 상단 간격 축소 */
+  border-radius: 1px;
+}
+
+.settings-item {
+  background: #e5e7eb;
+  border: 1.5px solid #111827;
+  border-radius: 6px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+  height: 130px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: relative;
+  text-align: left;
+}
+
+.settings-item h3 {
+  margin: 0 0 6px 0;
+  font-size: 1.1rem;
+  color: #1f2937;
+}
+
+.settings-item p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+/* 둥근 파란색 버튼 */
+.arrow-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 14px;
+  appearance: none;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow-btn:hover {
+  background-color: #1e40af;
+}
+
+/* 🔹 팝업 전체 배경 */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 🔹 팝업 본체 */
+.popup-box {
+  background: #ffffff;
+  width: 75vw;       /* 🔹 화면 너비의 80% */
+  height: 75vh;      /* 🔹 화면 높이의 80% */
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  padding: 40px 50px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  animation: fadeIn 0.25s ease;
+}
+
+/* 팝업 제목/내용 스타일 */
+.popup-box h2 {
+  margin-top: 0;
+  color: #1f2937;
+  font-size: 1.5rem;
+}
+
+.popup-box p {
+  color: #374151;
+  font-size: 0.95rem;
+  margin: 12px 0 20px;
+}
+
+/* 닫기 버튼 */
+.popup-close-btn {
+  align-self: flex-end;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.popup-close-btn:hover {
+  background: #1e40af;
+}
+
+/* 팝업 등장 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
