@@ -1,19 +1,19 @@
 // 파일 위치: src-tauri/src/state_engine.rs
 
-use std::time::{SystemTime, UNIX_EPOCH};
-use crate::commands::{ActiveWindowInfo, InputStats}; // commands.rs에서 정의한 데이터 모델
+use crate::commands::{ActiveWindowInfo, InputStats};
+use std::time::{SystemTime, UNIX_EPOCH}; // commands.rs에서 정의한 데이터 모델
 
 // --- 1. 상수 정의 ---
 
 /// '방해 앱'으로 간주되는 키워드 목록
 /// StateEngine은 이 목록을 기반으로 '이탈 점수'를 계산
 const DISTRACTION_KEYWORDS: &[&str] = &[
-    "youtube", 
+    "youtube",
     "netflix",
     "facebook",
-    "discord",     
-    "steam.exe",   
-    "slack",       
+    "discord",
+    "steam.exe",
+    "slack",
 ];
 
 /// 점수 임계값: 이탈 점수가 이 값에 도달하면 '알림'을 트리거
@@ -32,15 +32,14 @@ const SCORE_INACTIVITY_SEVERE: u16 = 10;
 const INACTIVITY_THRESHOLD_MILD_S: u64 = 180; // 3분
 const INACTIVITY_THRESHOLD_SEVERE_S: u64 = 600; // 10분
 
-
 // --- 2. StateEngine 상태 및 로직 ---
 
 /// State Engine이 반환할 개입(Intervention) 명령의 종류
 #[derive(Debug, PartialEq)]
 pub enum InterventionTrigger {
-    DoNothing,          // 아무것도 하지 않음
+    DoNothing,           // 아무것도 하지 않음
     TriggerNotification, // 가벼운 알림 (예: OS 알림)
-    TriggerOverlay,     // 강한 개입 (예: 화면 오버레이)
+    TriggerOverlay,      // 강한 개입 (예: 화면 오버레이)
 }
 
 /// State Engine의 현재 상태를 관리하는 구조체
@@ -48,15 +47,13 @@ pub enum InterventionTrigger {
 #[derive(Debug)]
 pub struct StateEngine {
     /// 현재 누적된 '이탈 점수'
-    deviation_score: u16
+    deviation_score: u16,
 }
 
 impl StateEngine {
     /// 새로운 세션을 위한 StateEngine을 생성
     pub fn new() -> Self {
-        StateEngine {
-            deviation_score: 0
-        }
+        StateEngine { deviation_score: 0 }
     }
 
     /// 현재 점수를 반환 (UI 표시 등에 사용)
@@ -88,9 +85,9 @@ impl StateEngine {
         let title_lower = window_info.title.to_lowercase();
         let app_name_lower = window_info.app_name.to_lowercase();
 
-        let is_distraction = DISTRACTION_KEYWORDS.iter().any(|&keyword| {
-            title_lower.contains(keyword) || app_name_lower.contains(keyword)
-        });
+        let is_distraction = DISTRACTION_KEYWORDS
+            .iter()
+            .any(|&keyword| title_lower.contains(keyword) || app_name_lower.contains(keyword));
 
         // --- 규칙 2: 비활성(Inactivity) 검사 ---
         if is_distraction {
@@ -109,7 +106,7 @@ impl StateEngine {
             } else if inactivity_duration_s >= INACTIVITY_THRESHOLD_MILD_S {
                 score_to_add += SCORE_INACTIVITY_MILD;
             }
-            
+
             // 점수를 누적
             self.deviation_score = (self.deviation_score + score_to_add).min(100);
 
@@ -120,15 +117,14 @@ impl StateEngine {
                 return InterventionTrigger::TriggerNotification;
             } else {
                 // 점수는 쌓였지만 아직 임계값 미만
-                return InterventionTrigger::DoNothing; 
+                return InterventionTrigger::DoNothing;
             }
-
         } else {
             // --- 3. 업무 중인 경우 (is_distraction == false) ---
-            
+
             // 점수를 능동적으로 감소
-            self.deviation_score = self.deviation_score.saturating_sub(1); 
-            
+            self.deviation_score = self.deviation_score.saturating_sub(1);
+
             // 3b. '업무 중'일 때는 절대 개입하지 않고 DoNothing을 반환
             return InterventionTrigger::DoNothing;
         }
@@ -145,7 +141,6 @@ fn current_timestamp_s() -> u64 {
         .as_secs()
 }
 
-
 // --- 4. 유닛 테스트 ---
 // 이 모듈이 독립적으로 잘 작동하는지 테스트
 #[cfg(test)]
@@ -161,7 +156,10 @@ mod tests {
             app_name: app_name.to_string(),
             window_id: "".to_string(),
             process_id: 0,
-            x: 0.0, y: 0.0, width: 0.0, height: 0.0,
+            x: 0.0,
+            y: 0.0,
+            width: 0.0,
+            height: 0.0,
         }
     }
 
@@ -197,19 +195,22 @@ mod tests {
     #[test]
     fn test_inactivity_score_only_if_distraction() {
         let mut engine = StateEngine::new();
-        
+
         // 1. 업무 중 + 비활성 (생각하는 시간)
         let window_info_work = mock_window_info("Working on Document", "word.exe");
         let input_stats_inactive = mock_input_stats(240); // 4분
         engine.process_activity(&window_info_work, &input_stats_inactive);
         // 점수가 오르지 않아야 함 (오히려 0이거나 감소)
-        assert_eq!(engine.get_current_score(), 0); 
+        assert_eq!(engine.get_current_score(), 0);
 
         // 2. 딴짓 중 + 비활성
         let window_info_distraction = mock_window_info("YouTube", "chrome.exe");
         engine.process_activity(&window_info_distraction, &input_stats_inactive);
         // 딴짓 점수 + 비활성 점수
-        assert_eq!(engine.get_current_score(), SCORE_DISTRACTION_APP + SCORE_INACTIVITY_MILD);
+        assert_eq!(
+            engine.get_current_score(),
+            SCORE_DISTRACTION_APP + SCORE_INACTIVITY_MILD
+        );
     }
 
     #[test]
@@ -227,7 +228,7 @@ mod tests {
         let productive_window = mock_window_info("Productive Task", "code.exe");
         let productive_stats_inactive = mock_input_stats(30); // (생각 중)
         engine.process_activity(&productive_window, &productive_stats_inactive);
-        
+
         // 점수가 1 감소해야 함
         assert_eq!(engine.get_current_score(), initial_score.saturating_sub(1)); // 점수: 4
 
@@ -235,7 +236,8 @@ mod tests {
         engine.process_activity(&productive_window, &productive_stats_inactive);
 
         // 점수가 1 더 감소해야 함
-        assert_eq!(engine.get_current_score(), initial_score.saturating_sub(2)); // 점수: 3
+        assert_eq!(engine.get_current_score(), initial_score.saturating_sub(2));
+        // 점수: 3
     }
 
     //  업무 복귀 시 알림이 즉시 멈추는지 테스트
@@ -250,7 +252,7 @@ mod tests {
         let trigger2 = engine.process_activity(&distraction_window, &input_stats); // 10
         let trigger3 = engine.process_activity(&distraction_window, &input_stats); // 15
         let trigger_overlay = engine.process_activity(&distraction_window, &input_stats); // 20
-        
+
         assert_eq!(engine.get_current_score(), 20);
         assert_eq!(trigger_overlay, InterventionTrigger::TriggerOverlay); // 딴짓 중 -> 오버레이 발생
 

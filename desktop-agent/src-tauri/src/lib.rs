@@ -48,6 +48,7 @@ pub fn run() {
         Arc::new(Mutex::new(state_engine::StateEngine::new()));
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_opener::init())
 
         .manage(commands::SysinfoState( // commands::SysinfoState로 경로 명시
