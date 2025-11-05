@@ -3,6 +3,7 @@
 mod commands;
 mod logging;
 pub mod input_monitor;
+pub mod state_engine;
 
 use tauri::{Manager, Builder, State};
 use std::sync::{Mutex, Arc};
