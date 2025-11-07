@@ -15,6 +15,8 @@ use sysinfo::System;
 
 use std::time::{SystemTime, UNIX_EPOCH, Duration};
 
+use crate::storage_manager::StorageManager; 
+
 // ---  전역 공유 데이터 모델 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ActiveSessionInfo {
@@ -32,6 +34,9 @@ pub type InputStatsArcMutex = Arc<Mutex<commands::InputStats>>;
 
 // 2. StateEngine을 전역 상태로 관리하기 위한 타입 정의
 pub type StateEngineArcMutex = Arc<Mutex<state_engine::StateEngine>>;
+
+// 전역 LSN(StorageManager) 상태 타입
+pub type StorageManagerArcMutex = Arc<Mutex<StorageManager>>;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -67,12 +72,20 @@ pub fn run() {
         // BackendCommunicator를 전역 상태로 등록
         .manage(backend_communicator_state)
 
-        .setup(|app| {
-            let app_handle = app.handle();
-            let input_stats_arc_mutex_for_thread = Arc::clone(app_handle.state::<InputStatsArcMutex>().inner());
+        .setup(move |app| {
+            let app_handle = app.handle().clone();
+
+            // --- LSN 초기화 및 등록 ---
+            let storage_manager =
+                StorageManager::new_from_path(app_handle.clone())
+                    .expect("Failed to initialize StorageManager (LSN)");
+            
+            // LSN(StorageManager)을 전역 상태로 등록
+            app.manage(Arc::new(Mutex::new(storage_manager)));
+
 
             // rdev 이벤트 리스너를 별도의 스레드에서 시작하는 함수
-            input_monitor::start_input_listener(input_stats_arc_mutex_for_thread);
+            input_monitor::start_input_listener(input_stats_manager_state.clone());
 
             
             // // 데이터 수집 및 로깅 기능 시작
