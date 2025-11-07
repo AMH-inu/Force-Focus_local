@@ -3,6 +3,10 @@
 mod commands;
 mod logging;
 pub mod input_monitor;
+pub mod state_engine;
+pub mod app_core;
+pub mod backend_communicator;
+pub mod window_commands;
 
 use tauri::{Manager, Builder, State};
 use std::sync::{Mutex, Arc};
@@ -17,10 +21,13 @@ pub struct SysinfoState(pub Mutex<System>);
 // 사용자 입력 통계 추적을 위한 공유 상태
 pub type InputStatsArcMutex = Arc<Mutex<commands::InputStats>>;
 
+// 2. StateEngine을 전역 상태로 관리하기 위한 타입 정의
+pub type StateEngineArcMutex = Arc<Mutex<state_engine::StateEngine>>;
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
 
-    // InputStats 초기화 데이터를 먼저 생성합니다.
+    // InputStats 초기화 데이터를 먼저 생성
     let initial_input_stats = commands::InputStats {
         total_input_events: 0,
         last_input_timestamp_ms: SystemTime::now().duration_since(UNIX_EPOCH)
@@ -31,11 +38,18 @@ pub fn run() {
                                         .as_millis() as u64,
     };
 
-    // InputStatsArcMutex 타입을 직접 manage 하도록 합니다.
+    // InputStatsArcMutex 타입을 직접 manage
     let input_stats_manager_state: InputStatsArcMutex = Arc::new(Mutex::new(initial_input_stats));
 
+    // BackendCommunicator 인스턴스를 생성
+    let backend_communicator_state = backend_communicator::BackendCommunicator::new();
+
+    // StateEngine 인스턴스를 생성
+    let state_engine_manager_state: StateEngineArcMutex = 
+        Arc::new(Mutex::new(state_engine::StateEngine::new()));
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_opener::init())
 
         .manage(commands::SysinfoState( // commands::SysinfoState로 경로 명시
@@ -46,12 +60,17 @@ pub fn run() {
         // Arc<Mutex<commands::InputStats>> 타입을 관리
         .manage(input_stats_manager_state.clone()) // 초기화된 Arc를 manage에 전달
 
+        // StateEngine을 전역 상태로 등록
+        .manage(state_engine_manager_state.clone())
+
+        // BackendCommunicator를 전역 상태로 등록
+        .manage(backend_communicator_state)
 
         .setup(|app| {
             let app_handle = app.handle();
             let input_stats_arc_mutex_for_thread = Arc::clone(app_handle.state::<InputStatsArcMutex>().inner());
 
-            // 2. rdev 이벤트 리스너를 별도의 스레드에서 시작하는 함수
+            // rdev 이벤트 리스너를 별도의 스레드에서 시작하는 함수
             input_monitor::start_input_listener(input_stats_arc_mutex_for_thread);
 
             
@@ -59,7 +78,10 @@ pub fn run() {
             let input_stats_arc_mutex_for_logging = Arc::clone(app_handle.state::<InputStatsArcMutex>().inner());
             logging::start_data_collection_and_logging(input_stats_arc_mutex_for_logging, 10); // 10초마다 로깅
 
-    
+            // app_core의 '메인 루프'를 시작
+            // app_handle을 복제하여 넘겨주어 스레드가 AppHandle을 소유
+            app_core::start_core_loop(app_handle.clone());
+
             Ok(())
         })
 
@@ -69,6 +91,10 @@ pub fn run() {
             commands::get_all_processes_summary,
             commands::get_input_frequency_stats,
 
+            // backend_communicator 모듈의 커맨드를 핸들러에 등록
+            backend_communicator::submit_feedback,
+
+            window_commands::hide_overlay
             ])
 
         .run(tauri::generate_context!())
