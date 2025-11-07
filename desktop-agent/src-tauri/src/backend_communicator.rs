@@ -16,6 +16,11 @@ use crate::storage_manager;
 use std::time::{SystemTime, UNIX_EPOCH}; // 세션 시작 시간 생성용
 use uuid::Uuid; // 로컬에서 임시 세션 ID 생성용
 
+// 백그라운드 동기화를 위해 tokio::spawn과 Arc, Mutex를 사용
+use tokio::spawn;
+use std::sync::{Arc, Mutex};
+
+
 // --- 1. 상수 정의 ---
 
 // MSW 목업이 아닌, 실제 FastAPI 백엔드 서버의 주소
@@ -139,102 +144,110 @@ pub async fn start_session(
 ) -> Result<ActiveSessionInfo, String> { // React에 ActiveSessionInfo 반환
 
 
-    // 1. '읽기' 락: .await 전에 세션이 활성 상태인지 '확인'
-    { // 락 범위를 제한하기 위해 새 스코프 생성
-        let session_state = session_state_mutex.lock().map_err(|e| format!("State lock error: {}", e))?;
+    // 1. '쓰기' 락: .await 전에 LSN과 전역 상태를 즉시 업데이트
+    let info = { // 락 범위를 제한하기 위해 새 스코프 생성
+        let mut session_state = session_state_mutex.lock().map_err(|e| format!("State lock error: {}", e))?;
+        let storage_manager = storage_manager_mutex.lock().map_err(|e| format!("Storage lock error: {}", e))?;
+
         if session_state.is_some() {
             return Err("Session already active.".to_string());
         }
-        // 'session_state' MutexGuard는 여기서(스코프 끝) 자동으로 drop (락 해제)
-    }
-    // [!] storage_manager 락도 .await 이후로 이동
 
-    let task_id_ref = task_id.as_deref();
-    let request_body = SessionStartRequest {
-        task_id: task_id_ref,
-        goal_duration,
+        // 서버 응답을 기다리지 않고, 로컬에서 즉시 세션 정보를 생성
+        let session_id = format!("local-{}", Uuid::new_v4());
+        let start_time_s = SystemTime::now().duration_since(UNIX_EPOCH)
+            .map_err(|e| e.to_string())?.as_secs();
+
+        let info = ActiveSessionInfo {
+            session_id: session_id.clone(),
+            task_id: task_id.clone(), // task_id도 백그라운드 스레드로 move하기 위해 clone
+            start_time_s,
+        };
+        
+        // LSN에 저장
+        storage_manager.save_active_session(&info)?;
+        // 전역 상태 업데이트
+        *session_state = Some(info.clone());
+        eprintln!("Session started (Offline-First). ID: {}", info.session_id);
+
+        info // 이 info를 스코프 밖으로 반환
+        // MutexGuard('session_state', 'storage_manager')는 여기서 자동으로 drop (락 해제)
     };
-    let url = format!("{}/sessions/start", API_BASE_URL);
 
-    // 2. await (네트워크 호출)
-    // .await이 실행되는 이 시점에는 *어떤 Mutex 락도* 걸려있지 않음
-    let result_info = match comm_state.client.post(&url).bearer_auth(MOCK_AUTH_TOKEN).json(&request_body).send().await {
-        Ok(response) if response.status().is_success() => {
-            // [케이스 A: 서버 통신 성공]
-            let response_body: SessionStartResponse = response.json().await.map_err(|e| e.to_string())?;
-            let start_time_s = chrono::DateTime::parse_from_rfc3339(&response_body.start_time)
-                .map_err(|e| e.to_string())?.timestamp() as u64;
+    // 2. 백그라운드 동기화: UI(React)를 기다리게 하지 않고,
+    //    별도 스레드에서 '느린' 네트워크 작업을 수행
 
-            let info = ActiveSessionInfo {
-                session_id: response_body.session_id,
-                task_id,
-                start_time_s,
-            };
-            println!("Session started (Online). ID: {}", info.session_id);
-            Ok(info)
-        }
-        _ => {
-            // [케이스 B: 서버 통신 실패 (오프라인 강건성)]
-            let session_id = format!("local-{}", Uuid::new_v4());
-            let start_time_s = SystemTime::now().duration_since(UNIX_EPOCH)
-                .map_err(|e| e.to_string())?.as_secs();
-
-            let info = ActiveSessionInfo {
-                session_id: session_id.clone(),
-                task_id,
-                start_time_s,
-            };
-            eprintln!("Session started (Offline). ID: {}", info.session_id);
-            // E0282: 컴파일러가 이 Ok의 Err 타입을 추론할 수 없으므로,
-            // '터보피시' 구문을 사용해 Err 타입이 String임을 명시
-            Ok::<ActiveSessionInfo, String>(info)
-        }
-    }?; // [!] .await의 결과를 먼저 확정 (info)
-
-    // 3. '쓰기' 락: .await가 끝난 *후에* LSN과 전역 상태를 갱신
-    let mut session_state = session_state_mutex.lock().map_err(|e| format!("State lock error: {}", e))?;
-    let storage_manager = storage_manager_mutex.lock().map_err(|e| format!("Storage lock error: {}", e))?;
-
-    storage_manager.save_active_session(&result_info)?;
-    *session_state = Some(result_info.clone());
     
-    Ok(result_info) // React가 타이머를 시작할 수 있도록 정보 반환
+    // comm_state(Arc)를 백그라운드 스레드로 move
+    let comm_state_clone = comm_state.inner().clone(); 
+
+    let info_clone = info.clone();
+
+    spawn(async move {
+
+        // 'info_clone' (소유권 O)의 데이터를 빌려쓰므로 'static 수명 문제 해결
+        let task_id_ref = info_clone.task_id.as_deref();
+        let request_body = SessionStartRequest {
+            task_id: task_id_ref,
+            goal_duration,
+        };
+        let url = format!("{}/sessions/start", API_BASE_URL);
+        
+        println!("Background sync: Attempting to sync session {} to server...", info_clone.session_id);
+        match comm_state_clone.client.post(&url).bearer_auth(MOCK_AUTH_TOKEN).json(&request_body).send().await {
+            Ok(response) if response.status().is_success() => {
+                let response_body: SessionStartResponse = response.json().await.unwrap(); // 간단한 unwrap
+                println!("Background sync: Session {} synced successfully. Server ID: {}", info_clone.session_id, response_body.session_id);
+                // (여기서 LSN의 local- ID를 Server ID로 업데이트하는 로직이 필요할 수 있음
+            }
+            _ => {
+                eprintln!("Background sync: Failed to sync session {}. Will retry later.", info_clone.session_id);
+            }
+        }
+    });
+
+    Ok(info)
 }
 
 // --- 세션 종료 커맨드 ---
 #[command]
 pub async fn end_session(
     user_evaluation_score: u8,
-    comm_state: State<'_, BackendCommunicator>,
+    // comm_state도 백그라운드 동기화를 위해 Arc<BackendCommunicator>를 받도록 변경
+    comm_state: State<'_, Arc<BackendCommunicator>>,
     session_state_mutex: State<'_, SessionStateArcMutex>,
     storage_manager_mutex: State<'_, StorageManagerArcMutex>,
 ) -> Result<(), String> {
 
-     // 1. '읽기' 락: .await 전에 세션 ID를 읽기
-    let active_session_id = { // 락 범위를 제한하기 위해 새 스코프 생성
-        let session_state = session_state_mutex.lock().map_err(|e| e.to_string())?;
-        session_state.as_ref()
+    // 1. '쓰기' 락: .await 전에 LSN과 전역 상태를 즉시 업데이트
+    let active_session_id = {
+        let mut session_state = session_state_mutex.lock().map_err(|e| e.to_string())?;
+        let storage_manager = storage_manager_mutex.lock().map_err(|e| e.to_string())?;
+        
+        let active_session_id = session_state.as_ref()
             .map(|s| s.session_id.clone())
-            .ok_or_else(|| "No active session to end.".to_string())?
-        // 'session_state' MutexGuard는 여기서(스코프 끝) 자동으로 drop (락 해제)
+            .ok_or_else(|| "No active session to end.".to_string())?;
+
+        // LSN 및 전역 상태 정리 (먼저 실행)
+        storage_manager.delete_active_session()?;
+        *session_state = None; // 전역 상태 초기화
+
+        println!("Session ID {} successfully ended locally (score: {}).", active_session_id, user_evaluation_score);
+        active_session_id // 스코프 밖으로 ID 반환
+        // MutexGuard('session_state', 'storage_manager')는 여기서 자동으로 drop (락 해제)
     };
 
+    // 2. 백그라운드 동기화: UI를 기다리게 하지 않음
     let url = format!("{}/sessions/{}", API_BASE_URL, active_session_id);
     let request_body = SessionEndRequest { user_evaluation_score };
+    let comm_state_clone = comm_state.inner().clone(); // 백그라운드 스레드로 move
 
-    // 2. .await (네트워크 호출)
-    // .await이 실행되는 이 시점에는 *어떤 Mutex 락도* 걸려있지 않음
-    let _ = comm_state.client.put(&url).bearer_auth(MOCK_AUTH_TOKEN).json(&request_body).send().await
-        .map_err(|e| eprintln!("Warning: Failed to sync session end to server: {}", e));
+    spawn(async move {
+        println!("Background sync: Attempting to sync session end for {}", active_session_id);
+        let _ = comm_state_clone.client.put(&url).bearer_auth(MOCK_AUTH_TOKEN).json(&request_body).send().await
+            .map_err(|e| eprintln!("Background sync: Warning: Failed to sync session end for {}: {}", active_session_id, e));
+        println!("Background sync: Session end sync attempt finished for {}.", active_session_id);
+    });
 
-    // 3. '쓰기' 락: .await가 끝난 *후에* LSN과 전역 상태를 갱신
-    let mut session_state = session_state_mutex.lock().map_err(|e| e.to_string())?;
-    let storage_manager = storage_manager_mutex.lock().map_err(|e| e.to_string())?;
-
-    // 로컬 상태 정리
-    storage_manager.delete_active_session()?;
-    *session_state = None; // 전역 상태 초기화
-
-    println!("Session ID {} successfully ended (score: {}).", active_session_id, user_evaluation_score);
     Ok(())
 }

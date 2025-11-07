@@ -8,8 +8,9 @@ use crate::{
     state_engine, // state_engine 모듈 사용
     InputStatsArcMutex, // lib.rs에서 정의한 타입
     StateEngineArcMutex, // lib.rs에서 정의할 타입
-    SessionStateArcMutex, // [전역 세션 상태 import
+    SessionStateArcMutex, // 전역 세션 상태 import
     StorageManagerArcMutex, // LSN import (이벤트 캐싱을 위해)
+    LoggableEventData, // 공유 모델 import
 };
 
 /// '메인 루프'를 별도 스레드에서 시작
@@ -47,14 +48,20 @@ pub fn start_core_loop<R: Runtime>(
                 let input_stats_state: State<'_, InputStatsArcMutex> = app_handle.state();
                 let input_stats = input_stats_state.lock().unwrap(); // Mutex 잠금
 
-                // --- LSN에 이벤트 캐싱 ---
+                // LoggableEventData 구조체를 생성
+                let event_data = LoggableEventData {
+                    app_name: &window_info.app_name,
+                    window_title: &window_info.title,
+                    input_stats: &*input_stats,
+                };
+                
+                // 단순화된 API를 호출
                 let storage_manager = storage_manager_mutex.lock().unwrap();
                 storage_manager.cache_event(
                     &active_session.session_id, 
-                    &window_info.app_name, 
-                    &window_info.title
+                    &event_data // [!] 구조체 참조 전달
                 ).unwrap_or_else(|e| eprintln!("Failed to cache event: {}", e));
-                drop(storage_manager); // LSN 락 즉시 해제
+                drop(storage_manager); 
 
 
                 // --- 3. StateEngine에 데이터 주입 ---

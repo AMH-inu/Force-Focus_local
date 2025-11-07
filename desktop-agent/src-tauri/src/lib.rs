@@ -25,6 +25,13 @@ pub struct ActiveSessionInfo {
     pub start_time_s: u64, // Unix timestamp (seconds)
 }
 
+// LSN 이벤트 캐싱을 위한 통합 데이터 모델
+pub struct LoggableEventData<'a> {
+    pub app_name: &'a str,
+    pub window_title: &'a str,
+    pub input_stats: &'a commands::InputStats,
+    // [추후] pub current_url: Option<&'a str>,
+}
 
 // 애플리케이션 전역에서 공유할 시스템 정보 상태 정의
 pub struct SysinfoState(pub Mutex<System>);
@@ -56,6 +63,9 @@ pub fn run() {
     // StateEngine 인스턴스를 생성
     let state_engine_manager_state: StateEngineArcMutex = 
         Arc::new(Mutex::new(state_engine::StateEngine::new()));
+
+    // Offline-First를 위한 상태 생성
+    let backend_communicator_state = Arc::new(backend_communicator::BackendCommunicator::new());
 
     tauri::Builder::default()
         .plugin(tauri_plugin_notification::init())
