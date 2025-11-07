@@ -32,11 +32,14 @@ pub struct SysinfoState(pub Mutex<System>);
 // 사용자 입력 통계 추적을 위한 공유 상태
 pub type InputStatsArcMutex = Arc<Mutex<commands::InputStats>>;
 
-// 2. StateEngine을 전역 상태로 관리하기 위한 타입 정의
+// StateEngine을 전역 상태로 관리하기 위한 타입 정의
 pub type StateEngineArcMutex = Arc<Mutex<state_engine::StateEngine>>;
 
 // 전역 LSN(StorageManager) 상태 타입
 pub type StorageManagerArcMutex = Arc<Mutex<StorageManager>>;
+
+// 전역 세션 상태 
+pub type SessionStateArcMutex = Arc<Mutex<Option<ActiveSessionInfo>>>;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -80,8 +83,21 @@ pub fn run() {
                 StorageManager::new_from_path(app_handle.clone())
                     .expect("Failed to initialize StorageManager (LSN)");
             
+            // '활성 세션'을 로드하여 전역 상태 초기화
+            let initial_session_state: Option<ActiveSessionInfo> =
+                storage_manager.load_active_session().unwrap_or_else(|e| {
+                    eprintln!("Failed to load active session from LSN: {}. Starting clean.", e);
+                    None
+                });
+
+            
+            let session_manager_state: SessionStateArcMutex = Arc::new(Mutex::new(initial_session_state));
+            let storage_manager_state: StorageManagerArcMutex = Arc::new(Mutex::new(storage_manager));
+
             // LSN(StorageManager)을 전역 상태로 등록
-            app.manage(Arc::new(Mutex::new(storage_manager)));
+            app.manage(storage_manager_state.clone());
+
+            app.manage(session_manager_state.clone());
 
 
             // rdev 이벤트 리스너를 별도의 스레드에서 시작하는 함수
@@ -94,7 +110,11 @@ pub fn run() {
 
             // app_core의 '메인 루프'를 시작
             // app_handle을 복제하여 넘겨주어 스레드가 AppHandle을 소유
-            app_core::start_core_loop(app_handle.clone());
+            app_core::start_core_loop(
+                app_handle.clone(),
+                session_manager_state.clone(), // 세션 상태 전달
+                storage_manager_state.clone(),  // LSN 전달
+            );
 
             Ok(())
         })
@@ -107,6 +127,8 @@ pub fn run() {
 
             // backend_communicator 모듈의 커맨드를 핸들러에 등록
             backend_communicator::submit_feedback,
+            backend_communicator::start_session, 
+            backend_communicator::end_session,   
 
             window_commands::hide_overlay
             ])
