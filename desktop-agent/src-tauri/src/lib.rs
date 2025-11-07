@@ -2,13 +2,12 @@
 
 mod commands;
 mod logging;
+pub mod input_monitor;
 
 use tauri::{Manager, Builder, State};
 use std::sync::{Mutex, Arc};
 use sysinfo::System;
 
-use rdev::{listen, Event, EventType};
-use std::thread; // 백그라운드 스레드를 위해 필요
 use std::time::{SystemTime, UNIX_EPOCH, Duration};
 
 
@@ -52,9 +51,8 @@ pub fn run() {
             let app_handle = app.handle();
             let input_stats_arc_mutex_for_thread = Arc::clone(app_handle.state::<InputStatsArcMutex>().inner());
 
-            // 백그라운드 스레드에서 rdev 이벤트를 리스닝하고,
-            // input_stats_arc_mutex_for_thread를 업데이트합니다.
-            start_input_listener(input_stats_arc_mutex_for_thread);
+            // 2. rdev 이벤트 리스너를 별도의 스레드에서 시작하는 함수
+            input_monitor::start_input_listener(input_stats_arc_mutex_for_thread);
 
             
             // 데이터 수집 및 로깅 기능 시작
@@ -81,40 +79,4 @@ pub fn run() {
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
-
-// rdev 이벤트 리스너를 시작하는 함수.
-fn start_input_listener(input_stats_arc_mutex: InputStatsArcMutex) {
-    thread::spawn(move || {
-        // rdev::listen 클로저 내부에서 input_stats_arc_mutex를 사용하도록 move
-        if let Err(error) = listen(move |event| {
-            match event.event_type {
-                // 키보드 누름
-                EventType::KeyPress(_) => {
-                    let mut stats_guard = input_stats_arc_mutex.lock().unwrap();
-                    stats_guard.total_input_events += 1;
-                    stats_guard.last_input_timestamp_ms = SystemTime::now().duration_since(UNIX_EPOCH)
-                                                    .unwrap_or_else(|_| Duration::from_secs(0))
-                                                    .as_millis() as u64;
-                    // (디버깅용) 키보드 이벤트 발생 시 콘솔 출력
-                    // eprintln!("KeyPress/Release detected: {:?}", event.event_type);
-                },
-                // 마우스 버튼 누름 (마우스 휠 추가 예정)
-                EventType::ButtonPress(_) => {
-                    let mut stats_guard = input_stats_arc_mutex.lock().unwrap();
-                    stats_guard.total_input_events += 1;
-                    stats_guard.last_input_timestamp_ms = SystemTime::now().duration_since(UNIX_EPOCH)
-                                                    .unwrap_or_else(|_| Duration::from_secs(0))
-                                                    .as_millis() as u64;
-                    // (디버깅용) 마우스 버튼 이벤트 발생 시 콘솔 출력
-                    // eprintln!("ButtonPress/Release detected: {:?}", event.event_type);
-                },
-                // 마우스 이동, 휠 등 다른 이벤트는 무시
-                _ => (),
-            }
-        }) {
-            eprintln!("Error listening for input events: {:?}", error);
-        }
-    });
 }
