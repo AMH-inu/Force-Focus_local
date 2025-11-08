@@ -1,0 +1,45 @@
+.schedule-container {
+  display: flex;
+  flex-direction: column; /* 메뉴가 상단 */
+  width: 100%;
+  height: 100%;
+  background: #f9fafb;
+  padding: 10px 20px; /* 🔹 세로 padding을 줄여 화면 오버 방지 */
+  box-sizing: border-box;
+  border-radius: 12px;
+  gap: 12px;
+  overflow: hidden; /* 🔹 화면 넘침 방지 */
+}
+
+.schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px; /* 기존 12px → 20px */
+  margin-top: 8px; /* 위에 여유 공간 추가 */
+}
+
+.view-buttons button,
+.action-buttons button {
+  border: none;
+  border-radius: 6px;
+  background-color: #e5e7eb;
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 6px 10px;
+  margin: 0 4px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+button:hover { background-color: #d1d5db; }
+button:active { transform: scale(0.97); }
+
+.view-buttons .active {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.add-btn { background-color: #3b82f6; color: white; }
+.delete-btn { background-color: #ef4444; color: white; }

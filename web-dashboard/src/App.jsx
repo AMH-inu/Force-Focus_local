@@ -2,10 +2,10 @@ import './App.css'
 import TitleBar from './components/Titlebar.jsx'
 import InfoBox from './components/InfoBox.jsx'
 import MenuBar from './components/MenuBar.jsx'
-import useMenuStore from './MenuStore.jsx'
+import useMainStore from './MainStore.jsx'
 
 function App() {
-  const { activeMenu } = useMenuStore()
+  const { activeMenu } = useMainStore()
   
   return (
     <>

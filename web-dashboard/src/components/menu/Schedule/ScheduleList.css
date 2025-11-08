@@ -1,0 +1,126 @@
+/* ================================
+   📋 일정 목록 (카드 리스트)
+================================ */
+
+.schedule-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  height: 100%;
+  background-color: #f9fafb;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* 제목 */
+.list-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 6px;
+}
+
+/* 카드 리스트 그리드 */
+.schedule-card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+/* 개별 카드 */
+.schedule-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+/* hover 시 효과 */
+.schedule-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  border-color: #93c5fd;
+}
+
+/* 카드 헤더 */
+.card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+/* 제목 */
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin: 0;
+}
+
+/* 날짜 */
+.card-date {
+  font-size: 0.85rem;
+  color: #4b5563;
+}
+
+/* 설명 */
+.card-description {
+  font-size: 0.9rem;
+  color: #374151;
+  flex-grow: 1;
+  margin: 10px 0;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+/* 카드 하단 */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* 생성일 */
+.created-at {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* 버튼 */
+.detail-btn {
+  background-color: #3b82f6 !important;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.detail-btn:hover {
+  background-color: #2563eb;
+}
+
+/* 빈 목록 안내 */
+.empty-list {
+  text-align: center;
+  font-size: 1rem;
+  color: #6b7280;
+  padding: 40px 0;
+}

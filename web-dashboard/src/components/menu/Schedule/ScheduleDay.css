@@ -1,0 +1,273 @@
+.day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background-color: #ffffff; /* ✅ 완전 흰색 배경 */
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px 16px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* 좌측 버튼 그룹 */
+.day-header-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 중앙 날짜 제목 */
+.day-header-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.day-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1f2937;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+
+/* 우측 공간 (정렬용) */
+.day-header-right {
+  width: 60px;
+}
+
+.day-title {
+  /* ⚠️ 1.25rem으로 수정 반영 */
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.day-title.sunday {
+  color: #dc2626;
+}
+
+.day-title.saturday {
+  color: #2563eb;
+}
+
+/* ===============================
+   본문 (시간표 + 타임라인)
+=============================== */
+.day-body {
+  flex: 1;
+  display: flex;
+  height: 100%;
+  overflow-y: hidden;
+  background: #ffffff;
+}
+
+.day-time-column {
+  width: 60px;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  position: relative;
+  z-index: 1;
+  padding-top: 0;
+}
+
+/* ⚠️ 시간 라벨: 레이아웃 흐름을 방해하지 않도록 높이를 0으로 설정 */
+.day-time-label {
+  height: 60px; /* 시간 라인 높이 유지 */
+  display: flex;
+  align-items: flex-start; 
+  justify-content: flex-end;
+  color: transparent; /* 텍스트는 내부 span이 담당 */
+  font-size: 0.75rem;
+  padding-right: 8px;
+  
+  /* 마진, 패딩 초기화 */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* ⚠️ 라벨 텍스트를 감싸는 span에 상대 위치 지정 (시간/일정 일치 핵심) */
+.day-time-label span {
+    color: #9ca3af;
+    position: relative;
+    right: 8px; /* 오른쪽 정렬을 위해 8px 이동 */
+    top: -10px; /* 텍스트를 위 시간 라인 중앙으로 끌어올림 */
+    pointer-events: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* 00:00 시간 라벨만 별도 조정 */
+.day-time-label:first-child span {
+  top: -15px; /* 00:00 라벨은 맨 위로 더 끌어올림 */
+}
+
+
+.day-timeline {
+  position: relative;
+  flex: 1;
+  background: #ffffff;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  border-left: none;  
+  position: relative;
+  z-index: 2;
+  overflow-x: visible;
+  padding-left: 10px; 
+  padding-top: 0;
+}
+
+/* ⚠️ 시간 구분선: 짙은 회색으로 수정 */
+.time-line {
+  height: 60px;
+  border-bottom: 1px solid #e5e7eb; /* 짙은 회색으로 변경 (f1f5f9 -> e5e7eb) */
+  position: relative;
+}
+
+.time-line:first-child {
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* ===============================
+   현재 시간 표시선
+=============================== */
+.current-time-line {
+  position: absolute;
+  left: -60px;
+  right: 0;
+  height: 2px;
+  background-color: #ef4444;
+  box-shadow: 0 0 3px rgba(239, 68, 68, 0.5);
+  z-index: 100;
+}
+
+.current-time-line::before {
+    content: '';
+    position: absolute;
+    left: 55px;
+    top: -4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ef4444;
+    z-index: 101;
+}
+
+/* ===============================
+   일정 블록
+=============================== */
+.day-task {
+  position: absolute;
+  left: 10px; 
+  right: 10px;
+  background-color: #dbeafe; 
+  border: 1px solid #93c5fd;
+  border-radius: 4px; 
+  color: #1e3a8a;
+  padding: 5px 8px; 
+  font-size: 0.9rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  overflow: hidden;
+  line-height: 1.3;
+}
+
+.day-task:hover {
+  background-color: #cfe3ff;
+  box-shadow: 0 3px 8px rgba(59, 130, 246, 0.15);
+}
+
+.task-title {
+  font-weight: 600;
+  margin: 0;
+  font-size: 0.85rem;
+  color: #1e3a8a;
+}
+
+.task-time {
+  font-size: 0.8rem;
+  color: #3b82f6;
+  margin-top: 2px;
+}
+
+.task-desc {
+  display: block; 
+  font-size: 0.75rem;
+  color: #4b5563;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===============================
+   Nav 버튼 스타일 (가독성 개선)
+=============================== */
+/* ===============================
+   📍 네비게이션 버튼 (◀, ▶)
+=============================== */
+.nav-btn {
+  background: #e0dddd !important;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 6px 12px;
+  font-size: 0.95rem;
+  color: #111827;
+  transition: all 0.2s ease;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* ✅ 브라우저 기본 스타일 제거 */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-shadow: none;
+}
+
+.nav-btn:hover {
+  background-color: #f9fafb;
+}
+
+.today-btn {
+  background: #e0dddd !important;
+  border: 1px solid #e5e7eb;
+  color: #111827;
+  border-radius: 6px;
+  padding: 0 14px;
+  height: 36px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 36px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* ✅ 브라우저 기본 버튼 스타일 제거 */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-shadow: none;
+}
+
+.today-btn:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}

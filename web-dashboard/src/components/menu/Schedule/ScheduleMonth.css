@@ -1,0 +1,159 @@
+/* ==============================
+   🗓️ 월별 스케줄 (제목 오른쪽 오늘버튼 + 공휴일 강조)
+============================== */
+
+.month-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* 제목 + 네비게이션 + 오늘 버튼 */
+.month-title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.month-nav-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.month-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+  color: #1f2937;
+  min-width: 160px;
+}
+
+/* 오늘 버튼 (제목 오른쪽 배치) */
+.today-btn-inline {
+  background: #3b82f6 !important;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.2s ease;
+}
+
+.today-btn-inline:hover {
+  background: #2563eb;
+}
+
+/* 이전/다음 달 버튼 */
+.nav-btn {
+  background: #e5e7eb;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 2px 6px;
+  transition: background 0.2s ease;
+}
+
+.nav-btn:hover {
+  background: #d1d5db;
+}
+
+/* 달력 그리드 */
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  align-content: start;
+}
+
+/* 요일 헤더 */
+.month-day-header {
+  text-align: center;
+  font-weight: 600;
+  color: #374151;
+  background: #e5e7eb;
+  border-radius: 6px;
+  padding: 4px 0;
+  font-size: 0.9rem;
+  height: 28px;
+  line-height: 20px;
+}
+
+/* 주말 요일 헤더 */
+.month-day-header.sunday {
+  color: #dc2626;
+}
+.month-day-header.saturday {
+  color: #2563eb;
+}
+
+/* 날짜 셀 */
+.month-cell {
+  background: white;
+  border-radius: 8px;
+  padding: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  min-height: 100px;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.month-cell:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 날짜 숫자 */
+.day-number {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+/* 주말 및 공휴일 색상 */
+.day-number.sunday-text {
+  color: #dc2626;
+}
+.day-number.saturday-text {
+  color: #2563eb;
+}
+
+/* 지난달/다음달 */
+.faded-cell {
+  background-color: #f9fafb;
+}
+.faded-text {
+  color: #9ca3af;
+}
+
+/* 일정 블록 */
+.month-task {
+  background-color: #c7d2fe;
+  color: #1e3a8a;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  padding: 2px 4px;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 오늘 강조 */
+.today-cell {
+  border: 2px solid #3b82f6;
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.4);
+}

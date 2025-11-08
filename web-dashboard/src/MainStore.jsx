@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-const useMenuStore = create((set) => ({
+const useMainStore = create((set) => ({
   // 메뉴 열림/닫힘 상태
   isOpen: true,
   toggleMenu: () => set((state) => ({ isOpen: !state.isOpen })),
@@ -10,4 +10,4 @@ const useMenuStore = create((set) => ({
   setActiveMenu: (menu) => set({ activeMenu: menu }),
 }))
 
-export default useMenuStore
+export default useMainStore

@@ -1,8 +1,8 @@
 import './MenuBar.css'
-import useMenuStore from '../MenuStore.jsx'
+import useMainStore from '../MainStore.jsx'
 
 export default function MenuBar() {
-  const { isOpen, toggleMenu, activeMenu, setActiveMenu } = useMenuStore()
+  const { isOpen, toggleMenu, activeMenu, setActiveMenu } = useMainStore()
 
   const menus = [
     { icon: '🏠', label: 'Overview' },

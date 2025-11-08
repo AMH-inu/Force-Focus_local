@@ -1,0 +1,136 @@
+/* ==========================
+   📅 주간 스케줄 (시간 헤더 추가)
+========================== */
+
+.week-calendar {
+  display: grid;
+  grid-template-columns: 60px repeat(7, 1fr); /* 왼쪽 시간 컬럼 약간 넓게 */
+  height: 100%;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* 좌측 시간 컬럼 */
+.time-column {
+  background-color: #f3f4f6;
+  border-right: 1px solid #d1d5db;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 상단 '시간' 헤더 */
+.time-header {
+  height: 56px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #d1d5db;
+  background-color: #f9fafb;
+  width: 100%;
+}
+
+/* 시간 레이블 */
+.time-label {
+  height: 40px;
+  font-size: 0.8rem;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* 요일+본문 컬럼 */
+.day-columns {
+  display: contents;
+}
+
+/* 개별 요일 컬럼 */
+.day-column {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #e5e7eb;
+  box-sizing: border-box;
+}
+
+/* 요일 헤더 */
+.day-header-cell {
+  height: 56px; /* 시간 헤더와 동일 높이 */
+  background-color: #f9fafb;
+  border-bottom: 1px solid #d1d5db;
+  text-align: center;
+  font-weight: 600;
+  padding: 6px 0;
+  box-sizing: border-box;
+}
+
+.day-header-cell.sunday {
+  color: #dc2626;
+}
+
+.day-header-cell.saturday {
+  color: #2563eb;
+}
+
+.week-header-day {
+  font-size: 0.9rem;
+}
+
+.week-header-date {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* 본문 */
+.day-body {
+  flex: 1;
+  position: relative;
+  background: #ffffff;
+  overflow-y: auto;
+}
+
+/* 시간 라인 */
+.time-line {
+  height: 40px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* 일정 블록 */
+.schedule-block {
+  position: absolute;
+  left: 10%;
+  width: 80%;
+  background-color: #dbeafe; 
+  border: 1px solid #93c5fd;
+  border-radius: 6px;
+  color: #1e3a8a;
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.schedule-block:hover {
+  background-color: #cfe3ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.25);
+  z-index: 10;
+}
+
+.task-title {
+  font-weight: 600;
+}
+
+.task-time {
+  font-size: 0.75rem;
+  color: #1e40af;
+  margin-top: 2px;
+}
