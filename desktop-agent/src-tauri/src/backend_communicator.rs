@@ -9,6 +9,7 @@ use crate::{
     ActiveSessionInfo,
     SessionStateArcMutex,
     StorageManagerArcMutex,
+    InputStatsArcMutex,
 };
 
 use crate::Task;
@@ -142,6 +143,7 @@ pub async fn start_session(
     comm_state: State<'_, Arc<BackendCommunicator>>,
     session_state_mutex: State<'_, SessionStateArcMutex>,
     storage_manager_mutex: State<'_, StorageManagerArcMutex>,
+    input_stats_mutex: State<'_, InputStatsArcMutex>,
 ) -> Result<ActiveSessionInfo, String> { // React에 ActiveSessionInfo 반환
 
 
@@ -149,6 +151,8 @@ pub async fn start_session(
     let info = { // 락 범위를 제한하기 위해 새 스코프 생성
         let mut session_state = session_state_mutex.lock().map_err(|e| format!("State lock error: {}", e))?;
         let storage_manager = storage_manager_mutex.lock().map_err(|e| format!("Storage lock error: {}", e))?;
+
+        let mut input_stats = input_stats_mutex.lock().map_err(|e| format!("InputStats lock error: {}", e))?;
 
         if session_state.is_some() {
             return Err("Session already active.".to_string());
@@ -169,6 +173,12 @@ pub async fn start_session(
         storage_manager.save_active_session(&info)?;
         // 전역 상태 업데이트
         *session_state = Some(info.clone());
+
+        // 새 세션이 시작될 때, '이벤트 횟수'를 0으로 초기화
+        input_stats.meaningful_input_events = 0;
+        input_stats.last_meaningful_input_timestamp_ms = start_time_s * 1000;
+        input_stats.last_mouse_move_timestamp_ms = start_time_s * 1000;
+
         eprintln!("Session started (Offline-First). ID: {}", info.session_id);
 
         info // 이 info를 스코프 밖으로 반환
