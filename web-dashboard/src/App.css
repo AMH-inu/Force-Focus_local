@@ -55,7 +55,7 @@ button:active {
   transform: scale(0.97);
 }
 
-/* 반응형 정렬용 래퍼 (선택적으로 사용할 수 있음) */
+/* 반응형 정렬용 래퍼 */
 #root {
   text-align: center;
 }

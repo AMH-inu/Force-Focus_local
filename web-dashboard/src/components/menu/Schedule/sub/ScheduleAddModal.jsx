@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { useScheduleStore } from './ScheduleStore';
 import "./ScheduleAddModal.css";
+import { useScheduleStore } from '../ScheduleStore';
 
+// 일정 추가 모달 컴포넌트
 export default function ScheduleAddModal({ onClose }) {
-  const addSchedule = useScheduleStore((state) => state.addSchedule);
+  const addSchedule = useScheduleStore((state) => state.addSchedule); // Zustand 전역 스토어에서 추가 함수 가져오기
 
   const [form, setForm] = useState({
     name: "",
@@ -12,7 +13,7 @@ export default function ScheduleAddModal({ onClose }) {
     start_time: "",
     due_date: "",
     due_time: "",
-  });
+  }); // 각 스케줄의 필드 상태 관리 (추후 수정 가능)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,7 +28,7 @@ export default function ScheduleAddModal({ onClose }) {
       return;
     }
 
-    addSchedule(form); // ✅ Zustand 전역 스토어에 추가
+    addSchedule(form); // Zustand 전역 스토어에 추가
     onClose(); // 닫기
   };
 

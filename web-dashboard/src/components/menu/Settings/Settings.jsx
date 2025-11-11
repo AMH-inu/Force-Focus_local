@@ -1,21 +1,24 @@
 import React, { useState } from "react";
 import "./Settings.css";
 
+// 설정(Settings) 컴포넌트
 const Settings = () => {
   const [activeTab, setActiveTab] = useState("limit");
-  const [popup, setPopup] = useState(null); // 🔹 현재 열린 팝업 식별자
+  const [popup, setPopup] = useState(null); // 현재 열린 팝업 식별자
 
-  // 🔹 팝업 열기 / 닫기 함수
+  // 팝업 열기 / 닫기 함수
   const openPopup = (id) => setPopup(id);
   const closePopup = () => setPopup(null);
 
-  // 🔹 팝업 내용 정의
+  // 팝업 내용 정의
   const renderPopup = () => {
     if (!popup) return null;
 
+    // 팝업 제목과 내용 공백으로 초기화
     let title = "";
     let content = "";
 
+    // 선택한 메뉴에 따른 팝업 제목과 내용 지정
     switch (popup) {
       case "manual":
         title = "직접 선택";

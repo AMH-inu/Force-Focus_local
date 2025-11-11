@@ -1,18 +1,19 @@
 import React from "react";
 import "./ScheduleWeek.css";
 
+// 스케줄 주간 뷰 컴포넌트
 export default function ScheduleWeek({ schedules }) {
-  const today = new Date();
-  const currentWeekStart = new Date(today);
-  currentWeekStart.setDate(today.getDate() - today.getDay());
+  const today = new Date(); // 오늘 날짜
+  const currentWeekStart = new Date(today); // 이번 주 시작일 (일요일)
+  currentWeekStart.setDate(today.getDate() - today.getDay()); // 일요일로 설정
 
   const weekDays = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(currentWeekStart);
     d.setDate(currentWeekStart.getDate() + i);
     return d;
-  });
+  }); // 이번 주에 해당하는 7일 배열 생성
 
-  const hours = Array.from({ length: 24 }, (_, i) => i);
+  const hours = Array.from({ length: 24 }, (_, i) => i); // 하루에 해당하는 0시부터 23시까지 시간 배열
 
   return (
     <div className="week-calendar">

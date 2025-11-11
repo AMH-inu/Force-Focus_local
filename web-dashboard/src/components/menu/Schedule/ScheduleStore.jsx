@@ -38,7 +38,7 @@ export const useScheduleStore = create(
         },
       ],
 
-      /** ✅ 일정 추가 함수 */
+      /** 일정 추가 함수 */
       addSchedule: (newSchedule) => {
         const schedules = get().schedules;
         const maxId = schedules.length > 0 ? Math.max(...schedules.map((s) => s.id)) : 0;
@@ -47,7 +47,7 @@ export const useScheduleStore = create(
         const now = new Date();
         const formattedDate = now.toISOString().split("T")[0]; // yyyy-mm-dd 형태
 
-        // ✅ 새 일정 구조를 기존과 완전히 동일하게 맞춤
+        // 새 일정 구조를 기존과 완전히 동일하게 맞춤
         const scheduleToAdd = {
           id: nextId,
           name: newSchedule.name || "제목 없음",
@@ -63,14 +63,14 @@ export const useScheduleStore = create(
         set({ schedules: updated });
       },
 
-      /** ✅ 일정 삭제 함수 */
+      /* 일정 삭제 함수 */
       deleteSchedule: (id) => {
         const updated = get().schedules.filter((s) => s.id !== id);
         set({ schedules: updated });
       },
     }),
     {
-      name: "schedule-storage", // ✅ localStorage에 저장되는 key 이름
+      name: "schedule-storage", // localStorage에 저장되는 key 이름
       getStorage: () => localStorage,
     }
   )

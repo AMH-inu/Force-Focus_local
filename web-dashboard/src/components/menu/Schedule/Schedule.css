@@ -1,22 +1,22 @@
 .schedule-container {
   display: flex;
-  flex-direction: column; /* 메뉴가 상단 */
+  flex-direction: column;
   width: 100%;
   height: 100%;
   background: #f9fafb;
-  padding: 10px 20px; /* 🔹 세로 padding을 줄여 화면 오버 방지 */
+  padding: 10px 20px;
   box-sizing: border-box;
   border-radius: 12px;
   gap: 12px;
-  overflow: hidden; /* 🔹 화면 넘침 방지 */
+  overflow: hidden;
 }
 
 .schedule-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px; /* 기존 12px → 20px */
-  margin-top: 8px; /* 위에 여유 공간 추가 */
+  margin-bottom: 12px;
+  margin-top: 8px;
 }
 
 .view-buttons button,

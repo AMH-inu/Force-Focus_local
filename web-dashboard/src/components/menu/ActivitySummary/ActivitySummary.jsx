@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./ActivitySummary.css"
 
+// 활동 요약(Activity Summary) 컴포넌트
 export default function ActivitySummary() {
   const [isVertical, setIsVertical] = useState(false);
 

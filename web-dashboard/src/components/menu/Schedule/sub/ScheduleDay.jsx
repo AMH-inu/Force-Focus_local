@@ -1,22 +1,28 @@
 import React, { useEffect, useState } from "react";
 import "./ScheduleDay.css";
 
-// 날짜 조작을 위해 Date 객체 대신 timestamp나 문자열을 사용하는 것이 안전합니다.
 const getFormattedDateString = (date) => date.toISOString().split("T")[0];
 
+// 스케줄 일간 뷰 컴포넌트
 export default function ScheduleDay({ schedules = [] }) {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date()); // 오늘 날짜로 설정
   
   // 표시 대상 날짜의 '연-월-일' 문자열을 상태 변화 없이 계산
   const currentDisplayDateStr = getFormattedDateString(currentDate);
   
   // 실제 '오늘' 날짜의 '연-월-일' 문자열
-  const todayStr = getFormattedDateString(new Date()); 
+  const todayStr = getFormattedDateString(new Date());
+
+  // 오늘 날짜인지 여부를 판단함
   const isCurrentlyToday = currentDisplayDateStr === todayStr;
 
+  // 요일 배열 정의
   const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
+
+  // 현재 날짜의 요일 계산
   const dayOfWeek = weekdays[currentDate.getDay()];
 
+  // 토요일과 일요일에 대한 클래스 지정 (토요일: saturday, 일요일: sunday)
   const dayClass =
     currentDate.getDay() === 0
       ? "sunday"
@@ -24,36 +30,35 @@ export default function ScheduleDay({ schedules = [] }) {
       ? "saturday"
       : "";
 
+  // 한 시간당 높이를 60px로 설정
   const HOUR_HEIGHT = 60;
+  
   // 현재 날짜일 때만 위치를 계산하고, 아니면 null로 설정
   const [currentPosition, setCurrentPosition] = useState(null); 
 
+  // useEffect 1) 현재 시간에 따른 시간 표시선 위치 업데이트
+  // currentDisplayDateStr 또는 todayStr 변경 시 useEffect 재실행
   useEffect(() => {
-    
     const updatePosition = () => {
-      // isCurrentlyToday가 false이면 업데이트 중단
-      if (!isCurrentlyToday) { 
+      if (!isCurrentlyToday) {   // isCurrentlyToday가 false이면 업데이트 중단
         setCurrentPosition(null);
         return;
-      }
-      
-      const now = new Date();
-      const minutes = now.getHours() * 60 + now.getMinutes();
-      const position = (minutes / 60) * HOUR_HEIGHT - 1; 
-      setCurrentPosition(position);
+      }  
+
+      const now = new Date(); // 현재 시각
+      const minutes = now.getHours() * 60 + now.getMinutes(); // 현재 시각을 분 단위로 변환
+      const position = (minutes / 60) * HOUR_HEIGHT - 1; // 현재 시각에 따른 위치 계산 (-1px 보정)
+      setCurrentPosition(position); // 위치 상태 업데이트
     };
 
-    if (isCurrentlyToday) {
+    if (isCurrentlyToday) {  // 오늘 날짜일 때만 타이머를 설정
       updatePosition();
-      // 오늘 날짜일 때만 타이머를 설정
       const timer = setInterval(updatePosition, 60000);
       return () => clearInterval(timer);
     } else {
-      // 오늘 날짜가 아닐 경우 위치 초기화 및 타이머 없음 보장
-      setCurrentPosition(null);
+      setCurrentPosition(null); // 오늘 날짜가 아닐 경우 위치 초기화 및 타이머 없음 보장
       return () => {};
     }
-    
   }, [currentDisplayDateStr, todayStr, isCurrentlyToday]);
 
   // 날짜 조작 함수 개선 (timestamp 사용)
@@ -64,9 +69,10 @@ export default function ScheduleDay({ schedules = [] }) {
     setCurrentDate(newDate);
   };
 
-  const handlePrevDay = () => navigateDay(-1);
-  const handleNextDay = () => navigateDay(1);
-  const handleToday = () => setCurrentDate(new Date());
+  // 네비게이션 버튼 핸들러
+  const handlePrevDay = () => navigateDay(-1); // 이전 날로 이동
+  const handleNextDay = () => navigateDay(1); // 다음 날로 이동
+  const handleToday = () => setCurrentDate(new Date()); // 오늘 날짜로 이동
 
   // 일정 필터링
   const daySchedules = schedules.filter(
@@ -77,7 +83,7 @@ export default function ScheduleDay({ schedules = [] }) {
     <div className="day-view">
       {/* 상단 날짜 헤더 */}
       <div className="day-header">
-        {/* ⬅️ 좌측 영역: ◀, ▶, '오늘' 버튼을 모두 포함하며 동일 간격 배치 */}
+        {/* 좌측 영역: ◀, ▶, '오늘' 버튼을 모두 포함하며 동일 간격 배치 */}
         <div className="day-header-left">
           <button className="nav-btn" onClick={handlePrevDay}>
             ◀
@@ -90,7 +96,7 @@ export default function ScheduleDay({ schedules = [] }) {
           </button>
         </div>
 
-        {/* ⬅️ 중앙 영역: 제목만 배치 */}
+        {/* 중앙 영역: 제목만 배치 */}
         <div className="day-header-center">
           <span className={`day-title ${dayClass}`}>
             {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월{" "}
@@ -98,7 +104,7 @@ export default function ScheduleDay({ schedules = [] }) {
           </span>
         </div>
 
-        {/* ⬅️ 우측 영역: 비워두고 flex: 1로 중앙 정렬 보조 */}
+        {/* 우측 영역: 비워두고 flex: 1로 중앙 정렬 보조 */}
         <div className="day-header-right">
           {/* 비움 */}
         </div>
@@ -114,7 +120,7 @@ export default function ScheduleDay({ schedules = [] }) {
               key={i} 
               className="day-time-label" 
             >
-              {/* ⚠️ span 태그로 감싸서 CSS에서 상대 위치 조정 */}
+              {/* span 태그로 감싸서 CSS에서 상대 위치 조정 */}
               <span>{i.toString().padStart(2, "0")}:00</span>
             </div>
           ))}

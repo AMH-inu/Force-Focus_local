@@ -1,17 +1,9 @@
 import React from "react";
 import "./ScheduleList.css";
 
-/**
- * 📅 일정 목록 보기 (카드 리스트)
- * 기존 Schedule.jsx의 일정 구조를 그대로 활용:
- * {
- *   id, name, description, created_at,
- *   start_date, start_time, due_date, due_time
- * }
- */
-
+// 일정 목록 컴포넌트
 const ScheduleList = ({ schedules = [] }) => {
-  // 최신순 정렬 (가장 최근 일정이 위로)
+  // 기본적으로 최신순 정렬 (가장 최근 일정이 위로)
   const sortedSchedules = [...schedules].sort(
     (a, b) => new Date(b.start_date + " " + b.start_time) - new Date(a.start_date + " " + a.start_time)
   );

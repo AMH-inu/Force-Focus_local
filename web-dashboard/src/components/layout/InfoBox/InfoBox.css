@@ -1,11 +1,11 @@
 .infobox {
   position: absolute;
-  top: 64px; /* 제목바 높이 */
+  top: 64px;
   left: 20%;
   width: 80%;
   height: calc(100vh - 60px);
   min-height: 100%;
-  height: auto; /* 전체 화면 - 제목바 */
+  height: auto;
   display: flex;
   flex-direction: column;
   overflow: hidden;

@@ -1,13 +1,14 @@
 import './InfoBox.css'
-import useMainStore from '../MainStore.jsx'
+import useMainStore from '../../../MainStore.jsx'
 
 // 각 메뉴별 컴포넌트를 불러옴
-import Overview from "./menu/Overview/Overview.jsx" // 메뉴 1 : Overview
-import Schedule from "./menu/Schedule/Schedule.jsx" // 메뉴 2 : 스케줄
-import ActivitySummary from "./menu/ActivitySummary/ActivitySummary.jsx" // 메뉴 3 : 활동 요약
-import Feedback from "./menu/Feedback/Feedback.jsx" // 메뉴 4 : 피드백
-import Settings from "./menu/Settings/Settings.jsx" // 메뉴 5 : 설정
+import Overview from "../../menu/Overview/Overview.jsx" // 메뉴 1 : Overview
+import Schedule from "../../menu/Schedule/Schedule.jsx" // 메뉴 2 : 스케줄
+import ActivitySummary from "../../menu/ActivitySummary/ActivitySummary.jsx" // 메뉴 3 : 활동 요약
+import Feedback from "../../menu/Feedback/Feedback.jsx" // 메뉴 4 : 피드백
+import Settings from "../../menu/Settings/Settings.jsx" // 메뉴 5 : 설정
 
+// InfoBox 컴포넌트 (중앙 정보 표시 영역)
 export default function InfoBox() {
   const activeMenu = useMainStore((state) => state.activeMenu);
 

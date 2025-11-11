@@ -11,15 +11,14 @@
   z-index: 9999;
 }
 
-/* 팝업 */
 .modal-content.large {
   background-color: white;
   border-radius: 12px;
   padding: 28px;
-  width: 600px; /* ✅ 기존보다 확대 */
+  width: 600px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
   animation: fadeIn 0.2s ease-in-out;
-  font-family: "Inter", "Pretendard", "Noto Sans KR", sans-serif; /* 보기 좋은 폰트 */
+  font-family: "Inter", "Pretendard", "Noto Sans KR", sans-serif; /* 기본 폰트 수정 */
 }
 
 .modal-content h2 {
@@ -96,6 +95,7 @@
   background-color: #d1d5db;
 }
 
+/* fadeIn Animation */
 @keyframes fadeIn {
   from {
     opacity: 0;

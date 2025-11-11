@@ -1,22 +1,26 @@
 import React, { useState } from "react";
 import "./Schedule.css";
-import ScheduleDay from "./ScheduleDay";
-import ScheduleWeek from "./ScheduleWeek";
-import ScheduleMonth from "./ScheduleMonth";
-import ScheduleList from "./ScheduleList";
-import ScheduleAddModal from "./ScheduleAddModal";
 import { useScheduleStore } from './ScheduleStore';
-import ScheduleDeleteModal from "./ScheduleDeleteModal";
 
+import ScheduleDay from "./sub/ScheduleDay";
+import ScheduleWeek from "./sub/ScheduleWeek";
+import ScheduleMonth from "./sub/ScheduleMonth";
+import ScheduleList from "./sub/ScheduleList";
+import ScheduleAddModal from "./sub/ScheduleAddModal";
+import ScheduleDeleteModal from "./sub/ScheduleDeleteModal";
+
+// 스케줄 메뉴 컴포넌트
 export default function Schedule() {
-  const { schedules } = useScheduleStore();
-  const [viewMode, setViewMode] = useState("week");
-  const [isAddOpen, setIsAddOpen] = useState(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const { schedules } = useScheduleStore(); // 현재 저장된 일정 가져오기
+  const [viewMode, setViewMode] = useState("week"); // 기본 뷰 모드는 '주'로 설정
+  const [isAddOpen, setIsAddOpen] = useState(false); // 일정 추가 모달 상태 (초기값 : 닫힘)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false); // 일정 삭제 모달 상태 (초기값 : 닫힘)
 
+  // 일정 추가 모달 열기/닫기 함수
   const openAddModal = () => setIsAddOpen(true);
   const closeAddModal = () => setIsAddOpen(false);
 
+  // 일정 삭제 모달 열기/닫기 함수
   const openDeleteModal = () => setIsDeleteOpen(true);
   const closeDeleteModal = () => setIsDeleteOpen(false);
 
@@ -60,13 +64,13 @@ export default function Schedule() {
         </div>
       </div>
 
-      {/* ✅ 모드별 렌더링 */}
+      {/* 모드별 렌더링 (일, 주, 월, 목록) */}
       {viewMode === "day" && <ScheduleDay schedules={schedules} />}
       {viewMode === "week" && <ScheduleWeek schedules={schedules} />}
       {viewMode === "month" && <ScheduleMonth schedules={schedules} />}
       {viewMode === "list" && <ScheduleList schedules={schedules} />}
 
-      {/* ✅ Zustand에서는 handleAddSchedule 불필요 */}
+      {/* Zustand 사용 */}
       {isAddOpen && <ScheduleAddModal onClose={closeAddModal} />}
       {isDeleteOpen && <ScheduleDeleteModal onClose={closeDeleteModal} />}
     </div>

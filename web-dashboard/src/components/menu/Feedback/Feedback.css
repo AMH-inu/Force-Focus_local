@@ -1,15 +1,15 @@
 /* 전체 영역 */
 .feedback-container {
   display: flex;
-  flex-direction: column; /* 메뉴가 상단 */
+  flex-direction: column;
   width: 100%;
-  height: calc(100vh - 20px); /* 🔹 padding 포함 시 화면 넘침 방지 */
+  height: calc(100vh - 20px);
   background: #f9fafb;
-  padding: 10px 20px; /* 🔹 세로 padding을 줄여 화면 오버 방지 */
+  padding: 10px 20px;
   box-sizing: border-box;
   border-radius: 12px;
   gap: 12px;
-  overflow: hidden; /* 🔹 화면 넘침 방지 */
+  overflow: hidden;
 }
 
 /* 상단 메뉴바 */
@@ -18,7 +18,7 @@
   border-radius: 8px;
   padding: 10px 16px;
   box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.05);
-  flex-shrink: 0; /* 메뉴바 고정 높이 */
+  flex-shrink: 0;
 }
 
 .feedback-menu ul {
@@ -67,17 +67,17 @@
 
 /* 각 섹션 카드 */
 .feedback-section {
-  flex: 1; /* 🔹 균등 분할 */
+  flex: 1;
   background: #f3f4f6;
   border-radius: 10px;
   padding: 20px 22px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* 🔹 상단 정렬 */
+  justify-content: flex-start;
   align-items: center;
-  overflow: hidden; /* 🔹 내부 스크롤 방지 */
-  min-height: 0; /* 🔹 flex overflow 방지 */
+  overflow: hidden;
+  min-height: 0;
 }
 
 /* 제목을 상단 배치 */
@@ -87,7 +87,7 @@
   font-size: 1.1rem;
   color: #1f2937;
   font-weight: 700;
-  align-self: flex-start; /* 🔹 제목 왼쪽 상단으로 이동 */
+  align-self: flex-start;
 }
 
 /* 본문 텍스트 중앙 정렬 */

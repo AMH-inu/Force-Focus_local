@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  background-color: #ffffff; /* ✅ 완전 흰색 배경 */
+  background-color: #ffffff;
   border-bottom: 1px solid #e5e7eb;
   padding: 10px 16px;
   box-sizing: border-box;
@@ -39,7 +39,6 @@
 }
 
 .day-title {
-  /* ⚠️ 1.25rem으로 수정 반영 */
   font-size: 1.25rem;
   font-weight: 600;
   color: #1f2937;
@@ -56,9 +55,7 @@
   color: #2563eb;
 }
 
-/* ===============================
-   본문 (시간표 + 타임라인)
-=============================== */
+/* 본문 (시간표 + 타임라인) */
 .day-body {
   flex: 1;
   display: flex;
@@ -79,37 +76,33 @@
   padding-top: 0;
 }
 
-/* ⚠️ 시간 라벨: 레이아웃 흐름을 방해하지 않도록 높이를 0으로 설정 */
+/* 시간 라벨: 레이아웃 흐름을 방해하지 않도록 높이를 0으로 설정 */
 .day-time-label {
-  height: 60px; /* 시간 라인 높이 유지 */
+  height: 60px;
   display: flex;
   align-items: flex-start; 
   justify-content: flex-end;
-  color: transparent; /* 텍스트는 내부 span이 담당 */
+  color: transparent;
   font-size: 0.75rem;
   padding-right: 8px;
-  
-  /* 마진, 패딩 초기화 */
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   width: 100%;
 }
 
-/* ⚠️ 라벨 텍스트를 감싸는 span에 상대 위치 지정 (시간/일정 일치 핵심) */
 .day-time-label span {
     color: #9ca3af;
     position: relative;
-    right: 8px; /* 오른쪽 정렬을 위해 8px 이동 */
-    top: -10px; /* 텍스트를 위 시간 라인 중앙으로 끌어올림 */
+    right: 8px;
+    top: -10px;
     pointer-events: none;
     padding: 0;
     margin: 0;
 }
 
-/* 00:00 시간 라벨만 별도 조정 */
 .day-time-label:first-child span {
-  top: -15px; /* 00:00 라벨은 맨 위로 더 끌어올림 */
+  top: -15px;
 }
 
 
@@ -127,10 +120,9 @@
   padding-top: 0;
 }
 
-/* ⚠️ 시간 구분선: 짙은 회색으로 수정 */
 .time-line {
   height: 60px;
-  border-bottom: 1px solid #e5e7eb; /* 짙은 회색으로 변경 (f1f5f9 -> e5e7eb) */
+  border-bottom: 1px solid #e5e7eb;
   position: relative;
 }
 
@@ -139,9 +131,7 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-/* ===============================
-   현재 시간 표시선
-=============================== */
+/* 현재 시간 표시선 */
 .current-time-line {
   position: absolute;
   left: -60px;
@@ -164,9 +154,7 @@
     z-index: 101;
 }
 
-/* ===============================
-   일정 블록
-=============================== */
+/* 일정 블록 */
 .day-task {
   position: absolute;
   left: 10px; 
@@ -211,12 +199,7 @@
   white-space: nowrap;
 }
 
-/* ===============================
-   Nav 버튼 스타일 (가독성 개선)
-=============================== */
-/* ===============================
-   📍 네비게이션 버튼 (◀, ▶)
-=============================== */
+/* 네비게이션 버튼 (◀, ▶) */
 .nav-btn {
   background: #e0dddd !important;
   border: 1px solid #e5e7eb;
@@ -231,12 +214,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* ✅ 브라우저 기본 스타일 제거 */
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  box-shadow: none;
 }
 
 .nav-btn:hover {
@@ -259,12 +236,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  /* ✅ 브라우저 기본 버튼 스타일 제거 */
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  box-shadow: none;
 }
 
 .today-btn:hover {

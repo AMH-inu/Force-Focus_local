@@ -1,9 +1,11 @@
 import './MenuBar.css'
-import useMainStore from '../MainStore.jsx'
+import useMainStore from '../../../MainStore.jsx'
 
+// 메뉴 바 컴포넌트 (좌측 사이드바 영역)
 export default function MenuBar() {
-  const { isOpen, toggleMenu, activeMenu, setActiveMenu } = useMainStore()
+  const { isOpen, toggleMenu, activeMenu, setActiveMenu } = useMainStore() // MainStore에서 상태와 액션을 가져옴
 
+  // 메뉴 아이템(아이콘, 레이블) 정의
   const menus = [
     { icon: '🏠', label: 'Overview' },
     { icon: '📝', label: '스케줄' },

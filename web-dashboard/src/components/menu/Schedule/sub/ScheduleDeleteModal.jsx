@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { useScheduleStore } from "./ScheduleStore";
-import "./ScheduleDeleteModal.css"; // 🆕 분리된 스타일 파일
+import "./ScheduleDeleteModal.css";
+import { useScheduleStore } from "../ScheduleStore";
 
+// 일정 삭제 모달 컴포넌트
 export default function ScheduleDeleteModal({ onClose }) {
-  const { schedules, deleteSchedule } = useScheduleStore();
-  const [selectedId, setSelectedId] = useState(null);
+  const { schedules, deleteSchedule } = useScheduleStore(); // Zustand 전역 스토어에서 일정 목록과 삭제 함수 가져오기
+  const [selectedId, setSelectedId] = useState(null); // 선택된 일정 ID 상태
 
   const handleDelete = () => {
-    if (!selectedId) {
+    if (!selectedId) { // 선택된 일정이 없을 경우 예외 처리
       alert("삭제할 일정을 선택하세요.");
       return;
     }
 
-    // ✅ 브라우저 기본 confirm 창으로 변경
+    // 브라우저 기본 confirm 창으로 변경
     const confirmed = window.confirm("정말 삭제하시겠습니까?");
     if (confirmed) {
       deleteSchedule(selectedId);

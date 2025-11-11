@@ -1,6 +1,7 @@
 import React from "react";
 import "./Feedback.css"
 
+// 피드백(Feedback) 컴포넌트
 export default function Feedback() {
   return (
     <div className="feedback-container">

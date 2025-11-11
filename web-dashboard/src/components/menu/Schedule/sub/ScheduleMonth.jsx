@@ -1,27 +1,28 @@
 import React, { useState } from "react";
 import "./ScheduleMonth.css";
 
+// 스케줄 월간 뷰 컴포넌트
 export default function ScheduleMonth({ schedules }) {
-  const today = new Date();
-  const [currentDate, setCurrentDate] = useState(
-    new Date(today.getFullYear(), today.getMonth(), 1)
-  );
+  const today = new Date(); // 오늘 날짜
 
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const startDayOfWeek = new Date(year, month, 1).getDay();
-  const endDayOfWeek = new Date(year, month, daysInMonth).getDay();
+  // 현재 표시 중인 연 - 월 - 1일 (오늘 날짜 기준으로 초기화)
+  const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1)); 
+
+  const year = currentDate.getFullYear(); // 현재 연도
+  const month = currentDate.getMonth(); // 현재 월 (0-11)
+  const daysInMonth = new Date(year, month + 1, 0).getDate(); // 해당 월의 총 일수
+  const startDayOfWeek = new Date(year, month, 1).getDay(); // 해당 월의 1일이 무슨 요일인지 (0:일, 6:토)
+  const endDayOfWeek = new Date(year, month, daysInMonth).getDay(); // 해당 월의 마지막 날이 무슨 요일인지
 
   const isCurrentMonth =
-    today.getFullYear() === year && today.getMonth() === month;
-  const todayDate = today.getDate();
+    today.getFullYear() === year && today.getMonth() === month; // 현재 보고 있는 달이 이번 달인지 여부
+  const todayDate = today.getDate(); // 오늘 날짜의 일자
 
-  // ✅ 지난/다음 달 정보
+  // 지난/다음 달 정보
   const prevMonthDays = new Date(year, month, 0).getDate();
   const nextMonthDayCount = 6 - endDayOfWeek;
 
-  // ✅ 공휴일/기념일
+  // 공휴일/기념일 (사전 지정)
   const holidays = [
     { month: 1, day: 1, name: "신정" },
     { month: 3, day: 1, name: "삼일절" },
@@ -33,7 +34,7 @@ export default function ScheduleMonth({ schedules }) {
     { month: 12, day: 25, name: "성탄절" },
   ];
 
-  // ✅ 날짜 배열 구성
+  // 날짜 배열 구성
   const days = [];
 
   for (let i = startDayOfWeek - 1; i >= 0; i--) {
@@ -55,7 +56,7 @@ export default function ScheduleMonth({ schedules }) {
     });
   }
 
-  // ✅ 날짜 포맷 함수 (YYYY-MM-DD)
+  // 날짜 포맷 함수 (YYYY-MM-DD)
   const formatDate = (date) => {
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -63,7 +64,7 @@ export default function ScheduleMonth({ schedules }) {
     return `${y}-${m}-${d}`;
   };
 
-  // ✅ 이동 함수
+  // 이동 함수
   const handlePrevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
   const handleNextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
   const handleToday = () =>
@@ -120,10 +121,10 @@ export default function ScheduleMonth({ schedules }) {
                 h.day === item.date.getDate()
             );
 
-          // ✅ 현재 날짜(YYYY-MM-DD)
+          // 현재 날짜(YYYY-MM-DD)
           const currentDateStr = formatDate(item.date);
 
-          // ✅ 해당 날짜의 일정 필터링
+          // 해당 날짜의 일정 필터링
           const dailySchedules = schedules.filter(
             (s) => s.start_date === currentDateStr
           );
@@ -144,7 +145,7 @@ export default function ScheduleMonth({ schedules }) {
                 {item.date.getDate()}
               </div>
 
-              {/* ✅ 일정 표시 */}
+              {/* 일정 표시 */}
               {dailySchedules.map((s) => (
                 <div key={s.id} className="month-task">
                   <strong>{s.name}</strong>

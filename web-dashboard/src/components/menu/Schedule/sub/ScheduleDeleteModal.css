@@ -1,7 +1,3 @@
-/* ================================
-   🗑️ 일정 삭제 모달 (UX 개선 버전)
-================================ */
-
 .delete-modal-overlay {
   position: fixed;
   top: 0;
@@ -56,10 +52,10 @@
   margin-bottom: 10px;
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease;
-  position: relative; /* ✅ 라디오 버튼 위치를 카드 내부 좌상단에 고정할 수 있도록 */
+  position: relative;
 }
 
-/* ✅ 카드 좌측 영역 */
+/* 카드 좌측 영역 */
 .delete-card-left {
   display: flex;
   align-items: flex-start;
@@ -68,7 +64,7 @@
   position: relative;
 }
 
-/* ✅ 라디오 버튼 크기 및 위치 */
+/* 라디오 버튼 크기 및 위치 */
 .delete-radio {
   width: 20px;     /* 조금 더 큼 */
   height: 20px;
@@ -79,7 +75,7 @@
   left: 6px;       /* 카드 왼쪽 여백 */
 }
 
-/* ✅ 일정 정보 (라디오 버튼 옆으로 이동) */
+/* 일정 정보 (라디오 버튼 옆으로 이동) */
 .delete-schedule-info {
   margin-left: 42px; /* 라디오 버튼 공간 확보 */
   text-align: left;

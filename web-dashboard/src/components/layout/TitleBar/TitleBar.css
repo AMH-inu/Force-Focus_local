@@ -18,16 +18,16 @@
   z-index: 1000;
 }
 
-/* 내부 정렬 컨테이너 (여기에 패딩 적용!) */
+/* 내부 정렬 컨테이너 */
 .titlebar__inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 100%;
   width: 100%;
-  max-width: 1600px;     /* 너무 커지지 않게 중앙 고정 */
-  margin: 0 auto;        /* 중앙 정렬 */
-  padding: 0 15px;       /* 좌우 여백은 여기에 적용 */
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 15px;
 }
 
 /* 왼쪽 그룹 */

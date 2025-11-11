@@ -1,6 +1,7 @@
 import React from "react";
 import "./Overview.css";
 
+// 개요(Overview) 컴포넌트
 export default function Overview() {
   return (
     <div className="overview-container">
