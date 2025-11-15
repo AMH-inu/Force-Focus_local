@@ -1,9 +1,10 @@
 # backend/app/crud/schedules.py
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
+from datetime import datetime
+
 from app.models.schedule import ScheduleInDB
 from app.schemas.schedule import ScheduleCreate, ScheduleUpdate, ScheduleRead
-from datetime import datetime
 
 client = AsyncIOMotorClient("mongodb://localhost:27017")
 db = client["scheduler_db"]
