@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from typing import List
 
 from app.schemas.schedule import ScheduleCreate, ScheduleUpdate, ScheduleRead
-from app.crud import schedules as schedule_crud   # 🔥 FIXED
+from app.crud import schedules as schedule_crud
 
 router = APIRouter(prefix="/schedules", tags=["Schedules"])
 
