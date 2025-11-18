@@ -48,11 +48,8 @@ const MainView: React.FC<MainViewProps> = ({ onLogout }) => {
       try {
         // msw가 가로챌 API 경로 (handlers.ts에 정의됨)
         // (주의: Rust가 아닌 React의 fetch는 msw에 의해 가로채집니다)
-        const response = await fetch('/api/v1/tasks');
-        if (!response.ok) {
-          throw new Error(`Failed to fetch tasks: ${response.statusText}`);
-        }
-        const data: Task[] = await response.json();
+        const data: Task[] = await invoke('get_tasks');
+
         setTasks(data);
 
         // Task 목록 로딩이 완료된 후에 기본 선택 ID를 설정

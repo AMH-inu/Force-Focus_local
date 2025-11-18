@@ -25,6 +25,21 @@ pub struct ActiveSessionInfo {
     pub start_time_s: u64, // Unix timestamp (seconds)
 }
 
+//  MainView.tsx가 invoke할 Task 데이터 모델 (handlers.ts 미러링) --- 중간 점검 production
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct Task {
+    id: String,
+    user_id: String,
+    task_name: String,
+    description: String,
+    due_date: String,
+    status: String,
+    target_executable: String,
+    target_arguments: Vec<String>, // handlers.ts는 [] (빈 배열)이었음
+    created_at: String,
+    updated_at: String,
+}
+
 // LSN 이벤트 캐싱을 위한 통합 데이터 모델
 pub struct LoggableEventData<'a> {
     pub app_name: &'a str,
@@ -139,6 +154,8 @@ pub fn run() {
             backend_communicator::submit_feedback,
             backend_communicator::start_session, 
             backend_communicator::end_session,   
+
+            backend_communicator::get_tasks,
 
             window_commands::hide_overlay
             ])

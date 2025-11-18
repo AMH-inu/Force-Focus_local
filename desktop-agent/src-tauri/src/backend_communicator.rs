@@ -9,8 +9,10 @@ use crate::{
     ActiveSessionInfo,
     SessionStateArcMutex,
     StorageManagerArcMutex,
+    InputStatsArcMutex,
 };
 
+use crate::Task;
 // StorageManager의 메서드를 호출하기 위해 모듈 import
 use crate::storage_manager; 
 use std::time::{SystemTime, UNIX_EPOCH}; // 세션 시작 시간 생성용
@@ -141,6 +143,7 @@ pub async fn start_session(
     comm_state: State<'_, Arc<BackendCommunicator>>,
     session_state_mutex: State<'_, SessionStateArcMutex>,
     storage_manager_mutex: State<'_, StorageManagerArcMutex>,
+    input_stats_mutex: State<'_, InputStatsArcMutex>,
 ) -> Result<ActiveSessionInfo, String> { // React에 ActiveSessionInfo 반환
 
 
@@ -148,6 +151,8 @@ pub async fn start_session(
     let info = { // 락 범위를 제한하기 위해 새 스코프 생성
         let mut session_state = session_state_mutex.lock().map_err(|e| format!("State lock error: {}", e))?;
         let storage_manager = storage_manager_mutex.lock().map_err(|e| format!("Storage lock error: {}", e))?;
+
+        let mut input_stats = input_stats_mutex.lock().map_err(|e| format!("InputStats lock error: {}", e))?;
 
         if session_state.is_some() {
             return Err("Session already active.".to_string());
@@ -168,6 +173,12 @@ pub async fn start_session(
         storage_manager.save_active_session(&info)?;
         // 전역 상태 업데이트
         *session_state = Some(info.clone());
+
+        // 새 세션이 시작될 때, '이벤트 횟수'를 0으로 초기화
+        input_stats.meaningful_input_events = 0;
+        input_stats.last_meaningful_input_timestamp_ms = start_time_s * 1000;
+        input_stats.last_mouse_move_timestamp_ms = start_time_s * 1000;
+
         eprintln!("Session started (Offline-First). ID: {}", info.session_id);
 
         info // 이 info를 스코프 밖으로 반환
@@ -250,4 +261,44 @@ pub async fn end_session(
     });
 
     Ok(())
+}
+
+
+
+// --- ['get_tasks' 커맨드 (빌드 오류 수정용) ---
+// MainView.tsx의 'fetch'를 'invoke'로 대체하기 위한 Rust 커맨드.
+// [!] (임시) handlers.ts의 'mockTasks' 데이터를 Rust에 하드코딩
+#[command]
+pub fn get_tasks() -> Result<Vec<Task>, String> {
+    println!("Rust command 'get_tasks' invoked (returning mock data)");
+    
+    // handlers.ts의 mockTasks 데이터를 Rust로 변환
+    let mock_tasks = vec![
+        Task {
+            id: "task-coding-session".to_string(),
+            user_id: "desktop-user-123".to_string(),
+            task_name: "코딩 세션 진행".to_string(),
+            description: "Force-Focus 데스크톱 앱 프런트엔드 개발".to_string(),
+            due_date: "2023-12-31T23:59:59Z".to_string(),
+            status: "active".to_string(),
+            target_executable: "vscode.exe".to_string(),
+            target_arguments: vec![],
+            created_at: "2023-10-26T10:00:00Z".to_string(),
+            updated_at: "2023-10-26T10:00:00Z".to_string(),
+        },
+        Task {
+            id: "task-report-writing".to_string(),
+            user_id: "desktop-user-123".to_string(),
+            task_name: "주간 보고서 작성".to_string(),
+            description: "지난 주 작업 내용 정리 및 보고서 초안 작성".to_string(),
+            due_date: "2023-11-03T18:00:00Z".to_string(),
+            status: "pending".to_string(),
+            target_executable: "word.exe".to_string(),
+            target_arguments: vec![],
+            created_at: "2023-10-25T09:00:00Z".to_string(),
+            updated_at: "2023-10-25T09:00:00Z".to_string(),
+        },
+    ];
+
+    Ok(mock_tasks)
 }
