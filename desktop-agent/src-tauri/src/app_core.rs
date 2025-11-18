@@ -44,36 +44,6 @@ pub fn start_core_loop<R: Runtime>(
                 // [!] (v2 API) app_handle.emit()은 'broadcast'입니다.
                 app_handle.emit("widget-tick", elapsed_seconds).ok();
 
-                // [수정] Task 4.12 (P2): 'Get-or-Create'로 위젯 창 관리 (Alt+F4 해결)
-                // (사용자의 '최소화' 요구사항(Task 3.6)은 Phase V(트레이)에서 구현)
-                if let Some(widget_window) = app_handle.get_webview_window("widget") {
-                    if !widget_window.is_visible().unwrap_or(false) {
-                        widget_window.show().ok();
-                    }
-                } else {
-                    // (Alt+F4 등으로 파괴된 경우 재생성)
-                    println!("Core Loop: Widget window not found. Re-creating...");
-                    
-                    #[cfg(debug_assertions)]
-                    let url = WebviewUrl::External(
-                        "http://localhost:1420/widget.html".parse::<tauri::Url>().unwrap()
-                    );
-                    #[cfg(not(debug_assertions))]
-                    let url = WebviewUrl::App("widget.html".into());
-
-                    if let Err(e) = WebviewWindowBuilder::new(&app_handle, "widget", url)
-                        .always_on_top(true)
-                        .decorations(false)
-                        .resizable(false)
-                        .skip_taskbar(true)
-                        .inner_size(220.0, 70.0) 
-                        .position(1680.0, 20.0) // [임시]
-                        .visible(true)
-                        .build()
-                    {
-                        eprintln!("Failed to re-create widget window: {:?}", e);
-                    }
-                }
 
                 if state_engine_counter >= 5 {
                     state_engine_counter = 0; // 카운터 리셋
@@ -174,13 +144,6 @@ pub fn start_core_loop<R: Runtime>(
             } else {
                 // --- [B] 세션이 비활성 상태일 때 ---
                 state_engine_counter = 0; // 카운터 리셋
-
-                // [추가] Task 1.3: 위젯 창 숨기기
-                if let Some(widget_window) = app_handle.get_webview_window("widget") {
-                    if widget_window.is_visible().unwrap_or(false) {
-                         widget_window.hide().ok();
-                    }
-                }
                 
                 // [추가] Task 4.12: 'widget-tick'을 0으로 방송
                 app_handle.emit("widget-tick", 0).ok();
