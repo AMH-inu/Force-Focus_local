@@ -61,3 +61,15 @@ version = "1.18.1"
 features = [
     "v4",
 ]
+
+# 11. 시각 센서 구현을 위한 Windows API 바인딩
+[target.'cfg(windows)'.dependencies]
+winapi = { version = "0.3", features = ["winuser", "minwindef", "winbase"] }
+
+windows = { version = "0.62.2", features = [
+    "Win32_Foundation",             # BOOL, HANDLE, PWSTR 등 기본 타입
+    "Win32_System_Threading",       # OpenProcess
+    "Win32_System_ProcessStatus",   # QueryFullProcessImageNameW
+    "Win32_UI_WindowsAndMessaging", # EnumWindows, GetWindowTextW, IsWindowVisible, GetWindowThreadProcessId
+] }
+# -------------------------------------------------------------

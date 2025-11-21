@@ -59,6 +59,33 @@ pub fn start_core_loop<R: Runtime>(
                             continue; // 다음 루프 실행
                         }
                     };
+                     // [추가] Task 1.1.2: 보이는 창 목록 데이터 수집 및 검증 (디버깅)
+                    let visible_windows = commands::_get_all_visible_windows_internal();
+                     // [DEBUG] 수집된 창 목록을 Z-Order 순서대로 출력하여 검증
+                    println!("\n--- Visual Sensor Analysis ---");
+
+                    // 화면 해상도(예: 1920x1080)를 기준으로 판단하거나,
+                    // 단순히 Z-Order 상위 2~3개 중 크기가 큰 것을 '메인'으로 간주합니다.
+
+                    for (i, win) in visible_windows.iter().enumerate() {
+                        // 창 너비/높이 계산
+                        let width = win.rect.right - win.rect.left;
+                        let height = win.rect.bottom - win.rect.top;
+                        
+                        // [판단 로직]
+                        // 1. 실제 OS 포커스를 가진 창 OR
+                        // 2. Z-Order가 매우 높고(예: Top 3 이내), 크기가 일정 수준 이상(예: 너비 > 500)인 창
+                        let is_visually_foreground = win.is_visible_on_screen;
+
+                        let status = if is_visually_foreground { 
+                            "[FOREGROUND / VISIBLE WORKSPACE]" 
+                        } else { 
+                            "[Background]" 
+                        };
+
+                        println!("Rank #{}: {} -> \"{}\" ({}x{})", i + 1, status, win.title, width, height);
+                    }
+                    println!("---------------------------------------------------\n");
 
                     // --- 2. 센서 데이터 수집 (Input Monitor) ---
                     let input_stats_state: State<'_, InputStatsArcMutex> = app_handle.state();
