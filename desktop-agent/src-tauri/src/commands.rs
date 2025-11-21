@@ -66,6 +66,11 @@ pub struct InputStats {
 
     // 모니터링 시작 시점
     pub start_monitoring_timestamp_ms: u64,
+
+    // 시각 센서 데이터 (보이는 창 목록)
+    // app_core.rs에서 _get_all_visible_windows_internal() 결과를 여기에 채워 넣습니다.
+    #[serde(default)] 
+    pub visible_windows: Vec<WindowInfo>, 
 }
 
 // FastAPI 모델 activity_vector
@@ -77,7 +82,10 @@ impl InputStats {
             "meaningful_input_events": self.meaningful_input_events,
             "last_meaningful_input_timestamp_ms": self.last_meaningful_input_timestamp_ms,
             "last_mouse_move_timestamp_ms": self.last_mouse_move_timestamp_ms,
-            // [추후] "clipboard_events": 0.0 (여기에만 추가하면 됨)
+
+            
+            "visible_windows": self.visible_windows,
+            
         });
         vector.to_string() // JSON 문자열로 반환
     }
@@ -206,7 +214,7 @@ const MIN_VISIBLE_WIDTH: i32 = 120;
 const MIN_VISIBLE_HEIGHT: i32 = 100;
 
 // [1] Debug 구현을 위한 Rust용 Rect 구조체
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)] 
 pub struct WinRect {
     pub left: i32,
     pub top: i32,
@@ -215,7 +223,7 @@ pub struct WinRect {
 }
 
 // [2] WindowInfo 구조체 정의
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)] 
 pub struct WindowInfo {
     pub title: String,
     pub is_visible_on_screen: bool,
