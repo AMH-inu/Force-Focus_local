@@ -21,6 +21,9 @@ use std::sync::{Mutex, Arc};
 use rdev::{listen, Event, EventType};
 use std::thread;
 
+use regex::Regex;
+use std::collections::HashSet;
+use std::path::Path;
 
 // [추가] Windows API 사용을 위한 모듈 import (Windows 환경에서만 컴파일)
 // [변경] windows 크레이트 import
@@ -124,11 +127,21 @@ pub fn _get_active_window_info_internal() -> Result<ActiveWindowInfo, String> {
     // 현재 활성 창 정보
     match get_active_window() {
         Ok(active_window) => {
+            // [수정] Task 1.1-Fix: app_name을 '실행 파일명'으로 통일
+            // active_win_pos_rs는 "Google Chrome" 같은 이름을 줄 수 있지만,
+            // 시각 센서(get_visible_windows)는 "chrome.exe"를 줍니다.
+            // 데이터 일관성을 위해 process_path에서 파일명을 다시 추출합니다.
+            let app_name = Path::new(&active_window.process_path)
+                .file_name()
+                .and_then(|name| name.to_str())
+                .map(|s| s.to_string())
+                .unwrap_or(active_window.app_name); // 실패 시 기존 값(Friendly Name) 사용
+
             Ok(ActiveWindowInfo {
                 timestamp_ms,
                 title: active_window.title,
                 process_path: active_window.process_path.to_string_lossy().into_owned(), // PathBuf를 String으로 변환
-                app_name: active_window.app_name,
+                app_name: app_name,
                 window_id: active_window.window_id,
                 process_id: active_window.process_id,
                 x: active_window.position.x,
@@ -226,7 +239,12 @@ pub struct WinRect {
 #[derive(Debug, Clone, Serialize, Deserialize)] 
 pub struct WindowInfo {
     pub title: String,
+    // 시맨틱 태깅을 위한 앱 이름 필드
+    // (예: chrome, Code)
+    pub app_name: String,
+
     pub is_visible_on_screen: bool,
+    
     pub rect: WinRect, 
 }
 
@@ -341,11 +359,22 @@ unsafe extern "system" fn enum_window_callback(hwnd: HWND, lparam: LPARAM) -> BO
 
                     let mut pid: u32 = 0;
                     GetWindowThreadProcessId(hwnd, Some(&mut pid));
-                    
-                    let is_system = if let Some(path) = get_process_path_from_pid(pid) {
+
+                    // [수정] app_name 추출을 위한 변수
+                    let mut app_name = String::from("Unknown"); 
+                    let mut is_system = false;
+
+                    if let Some(path) = get_process_path_from_pid(pid) {
                         let p = path.to_lowercase();
-                        WINDOWS_SYSTEM_PATHS.iter().any(|sys| p.starts_with(&sys.to_lowercase()))
-                    } else { false };
+                        is_system = WINDOWS_SYSTEM_PATHS.iter().any(|sys| p.starts_with(&sys.to_lowercase()));
+                        
+                        // 경로에서 파일명(app_name) 추출
+                        if !is_system {
+                            if let Some(name) = Path::new(&path).file_name() {
+                                app_name = name.to_string_lossy().into_owned();
+                            }
+                        }
+                    } 
 
                     if !is_system {
                         // ---------------------------------------------------------
@@ -383,6 +412,7 @@ unsafe extern "system" fn enum_window_callback(hwnd: HWND, lparam: LPARAM) -> BO
 
                         if is_visually_visible {
                             context.windows.push(WindowInfo {
+                                app_name, 
                                 title: trimmed_title.to_string(),
                                 is_visible_on_screen: true,
                                 rect: WinRect {
@@ -398,14 +428,14 @@ unsafe extern "system" fn enum_window_callback(hwnd: HWND, lparam: LPARAM) -> BO
                                 RGN_OR // RGN_COMBINE_MODE(2) -> OR
                             );
                         } else {
-                            // 안 보이는 창 (디버깅용 포함)
-                            context.windows.push(WindowInfo {
-                                title: trimmed_title.to_string(),
-                                is_visible_on_screen: false,
-                                rect: WinRect {
-                                    left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom,
-                                },
-                            });
+                            // // 안 보이는 창 (디버깅용 포함)
+                            // context.windows.push(WindowInfo {
+                            //     title: trimmed_title.to_string(),
+                            //     is_visible_on_screen: false,
+                            //     rect: WinRect {
+                            //         left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom,
+                            //     },
+                            // });
                         }
 
                         // E. 리소스 해제 (HGDIOBJ 변환 필요)
