@@ -1,4 +1,4 @@
-# backend/app/api/endpoints/schedules.py
+# backend/app/api/endpoints/web/schedules.py
 from fastapi import APIRouter, HTTPException, Depends, status
 from typing import List
 
