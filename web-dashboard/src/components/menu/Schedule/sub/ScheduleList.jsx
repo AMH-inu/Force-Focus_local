@@ -2,7 +2,7 @@ import React from "react";
 import "./ScheduleList.css";
 
 // 일정 목록 컴포넌트
-const ScheduleList = ({ schedules = [] }) => {
+const ScheduleList = ({ schedules = [], onScheduleClick }) => {
   // 기본적으로 최신순 정렬 (가장 최근 일정이 위로)
   const sortedSchedules = [...schedules].sort(
     (a, b) => new Date(b.start_date + " " + b.start_time) - new Date(a.start_date + " " + a.start_time)
@@ -17,7 +17,10 @@ const ScheduleList = ({ schedules = [] }) => {
       ) : (
         <div className="schedule-card-list">
           {sortedSchedules.map((item) => (
-            <div key={item.id} className="schedule-card">
+            <div key={item.id} className="schedule-card"
+            style={{ cursor: "pointer" }}
+            onClick={() => onScheduleClick && onScheduleClick(item)}
+            >
               <div className="card-header">
                 <h3 className="card-title">{item.name}</h3>
                 <span className="card-date">

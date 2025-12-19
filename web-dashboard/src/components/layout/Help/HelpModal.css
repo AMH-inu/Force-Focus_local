@@ -96,6 +96,17 @@
   background: #e65757;
 }
 
+.dark-theme .help-modal {
+  background: #1e293b;
+  color: #f8fafc;
+}
+.dark-theme .help-section {
+  border-bottom-color: #334155;
+}
+.dark-theme .help-content p, .dark-theme .help-content li {
+  color: #cbd5e1;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: translateY(0); }

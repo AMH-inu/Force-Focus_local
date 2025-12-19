@@ -67,11 +67,11 @@
 }
 
 .day-header-cell.sunday {
-  color: #dc2626;
+  color: #dc2626 !important;
 }
 
 .day-header-cell.saturday {
-  color: #2563eb;
+  color: #2563eb !important;
 }
 
 .week-header-day {
@@ -129,4 +129,24 @@
   font-size: 0.75rem;
   color: #1e40af;
   margin-top: 2px;
+}
+
+.dark-theme .week-calendar {
+  background: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+.dark-theme .time-column, 
+.dark-theme .time-header, 
+.dark-theme .day-header-cell {
+  background-color: var(--bg-sidebar);
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
+.dark-theme .time-label, .dark-theme .time-line { border-color: var(--border-color); }
+.dark-theme .schedule-block {
+  background-color: #1e3a8a;
+  color: #ffffff;
+  border-color: #3b82f6;
 }

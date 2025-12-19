@@ -64,12 +64,7 @@ export const useTasks = () => {
   }, [fetchTasks]);
 
   return {
-    tasks,
-    loading,
-    error,
-    addTask,
-    updateTask,
-    removeTask,
-    refreshTasks: fetchTasks,
+    tasks, loading, error, 
+    addTask, updateTask, removeTask, refreshTasks: fetchTasks,
   };
 };

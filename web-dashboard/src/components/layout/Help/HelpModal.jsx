@@ -12,8 +12,8 @@ export default function HelpModal() {
 
         <div className="help-content">
           <p>
-            이 대시보드에서는 실행 강제 시스템에서의 <strong>활동 요약</strong>,{" "}
-            <strong>일정 관리</strong>, <strong>활동 피드백</strong> 등의 기능을 한 곳에서
+            이 대시보드에서는 실행 강제 시스템에서의 <strong>일정 관리</strong>,{" "}
+            <strong>활동 요약</strong>, <strong>활동 피드백</strong> 등의 기능을 한 곳에서
             편리하게 사용할 수 있도록 제공합니다.
           </p>
 
@@ -31,13 +31,12 @@ export default function HelpModal() {
 
         {/* 활용 팁 및 예정된 업데이트*/}
         <div className="help-section">
-            <h3 className="help-section-title">💡 활용 팁 및 예정된 업데이트</h3>
+            <h3 className="help-section-title">💡 2025. 12. 21. 기준 웹 대시보드 업데이트 현황</h3>
           <ul>
-            <li>⏱️ 우측 상단 새로고침 버튼을 누르면 즉시 화면을 동기화할 수 있습니다.</li>
-            <li>📝 추후 다크 모드 지원 추가 예정</li>
-            <li>📝 추후 계정 연동 기능 추가 예정</li>
-            <li>📝 추후 Overview 스케줄 견본 화면 추가 예정</li>
-            <li>📝 추후 일정 수정 기능 추가 예정</li>
+            <li>📝 다크 모드 지원 기능 추가</li>
+            <li>📝 로그인 화면 구현 및 로그인/로그아웃 기능 추가 (실제 로그인은 구현되지 않음)</li>
+            <li>📝 Overview 메뉴 화면에서 스케줄 렌더링 기능 추가</li>
+            <li>📝 기존 일정을 선택하여 일정을 수정할 수 있는 기능 추가</li>
           </ul>
         </div>
 

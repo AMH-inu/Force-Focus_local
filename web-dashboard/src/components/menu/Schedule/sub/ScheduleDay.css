@@ -48,11 +48,11 @@
 }
 
 .day-title.sunday {
-  color: #dc2626;
+  color: #dc2626 !important;
 }
 
 .day-title.saturday {
-  color: #2563eb;
+  color: #2563eb !important;
 }
 
 /* 본문 (시간표 + 타임라인) */
@@ -61,12 +61,12 @@
   display: flex;
   height: 100%;
   overflow-y: hidden;
-  background: #ffffff;
+  background: var(--card-bg);;
 }
 
 .day-time-column {
   width: 60px;
-  background: #ffffff;
+  background: var(--card-bg);;
   border-right: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
@@ -109,7 +109,7 @@
 .day-timeline {
   position: relative;
   flex: 1;
-  background: #ffffff;
+  background: var(--card-bg);
   overflow-y: auto;
   scroll-behavior: smooth;
   border-left: none;  
@@ -241,4 +241,42 @@
 .today-btn:hover {
   background-color: #f9fafb;
   border-color: #d1d5db;
+}
+
+/* 다크모드 대응 */
+.dark-theme .day-header, 
+.dark-theme .day-body, 
+.dark-theme .day-time-column, 
+.dark-theme .day-timeline {
+  background-color: var(--card-bg); /* 어두운 카드 배경색 */
+  border-color: var(--border-color);
+}
+
+.dark-theme .day-title { color: var(--text-main); }
+.dark-theme .time-line { border-color: var(--border-color); }
+
+/* 일정 블록 색상 대비 조정 */
+.dark-theme .day-task {
+  background-color: #1e3a8a; /* 진한 파랑 */
+  border-color: #3b82f6;
+  color: #f8fafc;
+}
+.dark-theme .task-title { color: #ffffff; }
+.dark-theme .task-time, .dark-theme .task-desc { color: #94a3b8; }
+
+.dark-theme .nav-btn,
+.dark-theme .today-btn {
+  background-color: var(--bg-sidebar) !important; /* 다크 모드 시 어두운 배경 */
+  color: var(--text-main) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark-theme .nav-btn:hover,
+.dark-theme .today-btn:hover {
+  background-color: var(--border-color) !important;
+}
+
+/* 시간 라벨 텍스트 색상 */
+.dark-theme .day-time-label span {
+  color: var(--text-muted);
 }

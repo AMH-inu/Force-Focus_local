@@ -4,7 +4,7 @@ import "./ScheduleDay.css";
 const getFormattedDateString = (date) => date.toISOString().split("T")[0];
 
 // 스케줄 일간 뷰 컴포넌트
-export default function ScheduleDay({ schedules = [] }) {
+export default function ScheduleDay({ schedules = [], onScheduleClick }) {
   const [currentDate, setCurrentDate] = useState(new Date()); // 오늘 날짜로 설정
   
   // 표시 대상 날짜의 '연-월-일' 문자열을 상태 변화 없이 계산
@@ -154,7 +154,8 @@ export default function ScheduleDay({ schedules = [] }) {
               <div
                 key={s.id}
                 className="day-task"
-                style={{ top: `${top}px`, height: `${height}px` }}
+                style={{ top: `${top}px`, height: `${height}px`, cursor: "pointer" }} // 커서 추가
+                onClick={() => onScheduleClick && onScheduleClick(s)} // 클릭 이벤트 추가
               >
                 <div className="task-title">{s.name}</div>
                 <div className="task-time">
@@ -162,8 +163,8 @@ export default function ScheduleDay({ schedules = [] }) {
                 </div>
                 <div className="task-desc">{s.description}</div>
               </div>
-            );
-          })}
+    );
+  })}
         </div>
       </div>
     </div>

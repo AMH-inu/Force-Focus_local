@@ -121,10 +121,10 @@
 
 /* 주말 및 공휴일 색상 */
 .day-number.sunday-text {
-  color: #dc2626;
+  color: #dc2626 !important;
 }
 .day-number.saturday-text {
-  color: #2563eb;
+  color: #2563eb !important;
 }
 
 /* 지난달/다음달 */
@@ -153,3 +153,26 @@
   border: 2px solid #3b82f6;
   box-shadow: 0 0 6px rgba(59, 130, 246, 0.4);
 }
+
+/* 다크 모드 스타일링 */
+.dark-theme .month-view, .dark-theme .month-grid {
+  background: var(--bg-main);
+}
+
+.dark-theme .month-title {
+  color: var(--text-main);
+}
+
+.dark-theme .month-cell {
+  background: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+.dark-theme .month-day-header {
+  background: var(--bg-sidebar);
+  color: var(--text-main);
+}
+
+.dark-theme .day-number { color: var(--text-main); }
+.dark-theme .faded-cell { background-color: #0f172a; }
+.dark-theme .month-task { background-color: #312e81; color: #e0e7ff; }

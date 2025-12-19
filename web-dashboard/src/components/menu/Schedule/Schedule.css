@@ -43,3 +43,21 @@ button:active { transform: scale(0.97); }
 
 .add-btn { background-color: #3b82f6; color: white; }
 .delete-btn { background-color: #ef4444; color: white; }
+
+.dark-theme .schedule-container {
+  background: var(--bg-main);
+  color: var(--text-main);
+}
+
+.dark-theme .view-buttons button,
+.dark-theme .action-buttons button:not(.add-btn):not(.delete-btn) {
+  background-color: var(--border-color);
+  color: var(--text-main);
+}
+
+.dark-theme .view-buttons button:hover {
+  background-color: var(--text-muted);
+}
+
+.dark-theme .add-btn { background-color: var(--border-color); color: white; }
+.dark-theme .delete-btn { background-color: var(--border-color); color: white; }

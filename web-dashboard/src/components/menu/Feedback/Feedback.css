@@ -116,3 +116,22 @@
     padding: 14px 16px;
   }
 }
+
+/* 다크 모드 지원 */
+.dark-theme .feedback-container { background: var(--bg-main); }
+
+.dark-theme .feedback-menu {
+  background: var(--bg-sidebar);
+  color: var(--text-main);
+}
+
+.dark-theme .feedback-menu li { color: var(--text-muted); }
+.dark-theme .feedback-menu li:hover { color: var(--accent-color); }
+
+.dark-theme .feedback-section {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+.dark-theme .feedback-section h3 { color: var(--text-main); }
+.dark-theme .feedback-section p { color: var(--text-muted); }

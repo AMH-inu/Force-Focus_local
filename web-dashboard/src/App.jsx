@@ -1,44 +1,78 @@
-import './App.css'
-import TitleBar from './components/layout/TitleBar/TitleBar.jsx'
-import InfoBox from './components/layout/InfoBox/InfoBox.jsx'
-import MenuBar from './components/layout/MenuBar/MenuBar.jsx'
-import useMainStore from './MainStore.jsx'
-import HelpModal from './components/layout/Help/HelpModal.jsx'
+import { useEffect, useState } from 'react';
+import './App.css';
+import TitleBar from './components/layout/TitleBar/TitleBar.jsx';
+import InfoBox from './components/layout/InfoBox/InfoBox.jsx';
+import MenuBar from './components/layout/MenuBar/MenuBar.jsx';
+import useMainStore from './MainStore.jsx';
+import HelpModal from './components/layout/Help/HelpModal.jsx';
+import Login from './components/login/login.jsx';
 
 function App() {
-  const { activeMenu, isHelpOpen, openHelp } = useMainStore()
+  // Store에서 필요한 상태와 함수들을 가져옵니다.
+  const { isHelpOpen, openHelp, setActiveMenu, isDarkMode } = useMainStore();
   
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('accessToken'));
+
+  // [핵심 추가] 새로고침 시(컴포넌트 마운트 시) 무조건 Overview 메뉴로 이동
+  useEffect(() => {
+    if (isLoggedIn && setActiveMenu) {
+      setActiveMenu('Overview');
+    }
+  }, [isLoggedIn, setActiveMenu]);
+
+  // 로그아웃 로직
+  const handleLogout = () => {
+    if (window.confirm("로그아웃 하시겠습니까?")) {
+      localStorage.removeItem('accessToken');
+      
+      // 로그아웃 시에도 메뉴 상태를 'Overview'로 초기화
+      if (setActiveMenu) {
+        setActiveMenu('Overview'); 
+      }
+      
+      setIsLoggedIn(false);
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+  };
+
+  // 로그인하지 않은 경우 로그인 화면 렌더링
+  if (!isLoggedIn) {
+    return (
+      <Login onLoginSuccess={handleLoginSuccess} />
+    );
+  }
+
   return (
-    <>
-    {/* 1. 상단 제목 바 컴포넌트 */}
-    <TitleBar
+    // 다크모드 상태에 따라 클래스 동적 부여
+    <div className={`app-root ${isDarkMode ? 'dark-theme' : ''}`}>
+      <TitleBar
         onRefresh={() => location.reload()}
         onHelp={openHelp}
-    />
+        onLogout={handleLogout} 
+      />
 
-    {/* 2. 좌측 메뉴 바 컴포넌트 */}
-    <MenuBar />
-
-    {/* 메뉴 컴포넌트 서식 지정 */}
-    <main
+      <MenuBar />
+      
+      {/* 메인 콘텐츠 영역: 배경색을 CSS 변수(var(--bg-main))로 처리하여 다크모드 연동 */}
+      <main
         style={{
           marginLeft: '20%',
           paddingTop: '56px',
           height: 'calc(100vh - 56px)',
-          backgroundColor: '#f4f4f9',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+          backgroundColor: 'var(--bg-main)', 
+          transition: 'background-color 0.3s ease'
         }}
-    ></main>
+      >
+      </main>
 
-    {/* 3. 메뉴별 표시 영역 */}
-    <InfoBox />
+     <InfoBox />
 
-    {/* 4. 도움말 페이지 */}
       {isHelpOpen && <HelpModal />}
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;

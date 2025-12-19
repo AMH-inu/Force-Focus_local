@@ -13,9 +13,18 @@
   width: 100%;
   height: 64px;
   background: var(--tb-bg);
+  color: var(--tb-fg); /* 전체 기본 글자색 적용 */
   border-bottom: 1px solid var(--tb-border);
   box-shadow: 0 1px 6px rgba(0,0,0,0.06);
   z-index: 1000;
+  transition: background 0.3s ease, color 0.3s ease; /* 부드러운 전환 효과 */
+}
+
+/* 다크 모드 시 변수 값 업데이트 */
+.dark-theme .titlebar {
+  --tb-bg: #1e293b;
+  --tb-fg: #f8fafc; /* 제목과 텍스트가 흰색 계열로 변경됨 */
+  --tb-border: #334155;
 }
 
 /* 내부 정렬 컨테이너 */
@@ -58,6 +67,7 @@
   font-weight: 700;
   letter-spacing: -0.2px;
   white-space: nowrap;
+  color: var(--tb-fg);
 }
 
 /* 오른쪽 버튼 그룹 */
@@ -72,13 +82,26 @@
   padding: 6px 10px;
   border: 1px solid var(--tb-border);
   border-radius: 8px;
-  background: #fff;
+  background: #4a85c9 !important;
   font-size: 13px;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.05s ease;
 }
 .titlebar__btn:hover { background: #f9fafb; }
 .titlebar__btn:active { transform: translateY(1px); }
+
+/* 로그아웃 버튼 전용 스타일 예시 */
+.titlebar__btn--logout {
+  background-color: #ff4d4f !important;
+  color: white;
+  border: none;
+  margin-left: 8px;
+}
+
+.titlebar__btn--logout:hover {
+  background-color: #ff7875 !important;
+  cursor: pointer;
+}
 
 /* 본문 여백 보정 */
 body {

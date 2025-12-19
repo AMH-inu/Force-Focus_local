@@ -120,3 +120,16 @@
   color: #6b7280;
   padding: 40px 0;
 }
+
+/* 다크 모드 스타일링 */
+.dark-theme .schedule-list-container { background-color: var(--bg-main); }
+.dark-theme .list-title { color: var(--text-main); border-color: var(--border-color); }
+
+.dark-theme .schedule-card {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+.dark-theme .card-title { color: #60a5fa; }
+.dark-theme .card-date, .dark-theme .card-description { color: var(--text-muted); }
+.dark-theme .card-footer { border-top-color: var(--border-color); }

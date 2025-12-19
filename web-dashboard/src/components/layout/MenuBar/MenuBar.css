@@ -8,6 +8,17 @@
   --menu-border: #e5e7eb;
 }
 
+/* 다크 모드 */
+.dark-theme .menu-bar {
+  --menu-bg: #0b1220;
+  --menu-text: #f3f4f6;
+  --menu-hover-bg: #1f2937;
+  --menu-hover-text: #60a5fa;
+  --menu-active-bg: #1e3a8a;
+  --menu-active-text: #93c5fd;
+  --menu-border: #1f2937;
+}
+
 /* 전체 메뉴바 */
 .menu-bar {
   position: fixed;
@@ -19,8 +30,6 @@
   color: var(--menu-text);
   border-right: 1px solid var(--menu-border);
   box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
-  border-top-right-radius: 16px;
-  border-bottom-right-radius: 16px;
   display: flex;
   flex-direction: column;
   transition: width 0.3s ease;
@@ -38,7 +47,12 @@
   justify-content: space-between;
   padding: 10px 12px;
   border-bottom: 1px solid var(--menu-border);
-  background-color: #e0e1e2;
+  background-color: var(--menu-hover-bg);
+  height: 50px;
+}
+
+.collapsed .menu-bar__title {
+  display: none;
 }
 
 .menu-bar__title {
@@ -49,18 +63,27 @@
 
 /* 토글 버튼 */
 .menu-bar__toggle {
-  background-color: #cccccc !important;
+  background-color: transparent !important;
   border: none;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
   color: var(--menu-text);
   padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s ease;
 }
 
+/* 접혔을 때 버튼 위치를 중앙으로 조정 */
+.collapsed .menu-bar__toggle {
+  width: 100%;
+  margin: 0;
+}
+
 .menu-bar__toggle:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--menu-hover-bg);
   color: var(--menu-hover-text);
   border-radius: 6px;
   transform: scale(1.05);
@@ -68,7 +91,7 @@
 
 /* 메뉴 리스트 */
 .menu-bar__nav {
-  flex: 1;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -83,6 +106,7 @@
 
 /* 개별 메뉴 항목 */
 .menu-bar__item {
+  color: var(--menu-text);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -90,6 +114,11 @@
   cursor: pointer;
   transition: all 0.25s ease;
   border-bottom: 1px solid var(--menu-border);
+}
+
+.collapsed .menu-bar__item {
+  justify-content: center;
+  padding: 14px 0;
 }
 
 .menu-bar__icon {
@@ -119,13 +148,34 @@
   display: none;
 }
 
-/* 다크 모드 */
-.dark .menu-bar {
-  --menu-bg: #0b1220;
-  --menu-text: #f3f4f6;
-  --menu-hover-bg: #1f2937;
-  --menu-hover-text: #60a5fa;
-  --menu-active-bg: #1e3a8a;
-  --menu-active-text: #93c5fd;
-  --menu-border: #1f2937;
+/* 맨 아래쪽 푸터 영역 고정 */
+.menu-bar__footer {
+  margin-top: auto;
+  border-top: 1px solid var(--border-color);
+  padding: 10px 0;
 }
+
+/* 접혔을 때 푸터 아이템 중앙 정렬 */
+.collapsed .menu-bar__footer .menu-bar__item {
+  justify-content: center;
+  padding: 14px 0;
+}
+
+/* 다크모드 시 하단 아이템 색상 보정 */
+.dark-theme .theme-toggle-item {
+  color: #94a3b8;
+}
+.dark-theme .theme-toggle-item:hover {
+  background-color: #334155;
+  color: #ffffff;
+}
+
+.theme-toggle-item {
+  color: var(--text-muted);
+}
+
+.theme-toggle-item:hover {
+  color: var(--text-main);
+}
+
+

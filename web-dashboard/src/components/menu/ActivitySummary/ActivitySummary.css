@@ -145,3 +145,22 @@
 .wave.blue {
   stroke: rgba(99, 102, 241, 0.7);
 }
+
+.dark-theme .activity-summary { background-color: var(--bg-main); }
+
+.dark-theme .summary-header {
+  background-color: var(--bg-sidebar);
+  color: var(--text-main);
+}
+
+.dark-theme .summary-graph, .summary-report {
+  background: var(--card-bg);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+
+.dark-theme .graph-placeholder {
+  background: var(--bg-main);
+}
+
+.dark-theme .summary-graph h3, .summary-report h3 { color: var(--text-main); }

@@ -8,6 +8,7 @@ import ScheduleMonth from "./sub/ScheduleMonth";
 import ScheduleList from "./sub/ScheduleList";
 import ScheduleAddModal from "./sub/ScheduleAddModal";
 import ScheduleDeleteModal from "./sub/ScheduleDeleteModal";
+import ScheduleEditModal from "./sub/ScheduleEditModal";
 
 // 스케줄 메뉴 컴포넌트
 export default function Schedule() {
@@ -15,6 +16,8 @@ export default function Schedule() {
   const [viewMode, setViewMode] = useState("week"); // 기본 뷰 모드는 '주'로 설정
   const [isAddOpen, setIsAddOpen] = useState(false); // 일정 추가 모달 상태 (초기값 : 닫힘)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false); // 일정 삭제 모달 상태 (초기값 : 닫힘)
+  const [isEditOpen, setIsEditOpen] = useState(false); // 일정 수정 모달 상태 (초기값 : 닫힘)
+  const [selectedSchedule, setSelectedSchedule] = useState(null); // 수정할 일정 정보 상태
 
   // 일정 추가 모달 열기/닫기 함수
   const openAddModal = () => setIsAddOpen(true);
@@ -23,6 +26,16 @@ export default function Schedule() {
   // 일정 삭제 모달 열기/닫기 함수
   const openDeleteModal = () => setIsDeleteOpen(true);
   const closeDeleteModal = () => setIsDeleteOpen(false);
+
+  // 수정 모달 제어 함수
+  const openEditModal = (schedule) => {
+    setSelectedSchedule(schedule);
+    setIsEditOpen(true);
+  };
+  const closeEditModal = () => {
+    setSelectedSchedule(null);
+    setIsEditOpen(false);
+  };
 
   return (
     <div className="schedule-container">
@@ -64,15 +77,22 @@ export default function Schedule() {
         </div>
       </div>
 
-      {/* 모드별 렌더링 (일, 주, 월, 목록) */}
-      {viewMode === "day" && <ScheduleDay schedules={schedules} />}
-      {viewMode === "week" && <ScheduleWeek schedules={schedules} />}
-      {viewMode === "month" && <ScheduleMonth schedules={schedules} />}
-      {viewMode === "list" && <ScheduleList schedules={schedules} />}
+      {/* 각 뷰 컴포넌트에 onScheduleClick 프롭으로 수정 함수 전달 */}
+      {viewMode === "day" && <ScheduleDay schedules={schedules} onScheduleClick={openEditModal} />}
+      {viewMode === "week" && <ScheduleWeek schedules={schedules} onScheduleClick={openEditModal} />}
+      {viewMode === "month" && <ScheduleMonth schedules={schedules} onScheduleClick={openEditModal} />}
+      {viewMode === "list" && <ScheduleList schedules={schedules} onScheduleClick={openEditModal} />}
 
-      {/* Zustand 사용 */}
       {isAddOpen && <ScheduleAddModal onClose={closeAddModal} />}
       {isDeleteOpen && <ScheduleDeleteModal onClose={closeDeleteModal} />}
+      
+      {/* 수정 모달 렌더링 */}
+      {isEditOpen && selectedSchedule && (
+        <ScheduleEditModal 
+          schedule={selectedSchedule} 
+          onClose={closeEditModal} 
+        />
+      )}
     </div>
   );
 }

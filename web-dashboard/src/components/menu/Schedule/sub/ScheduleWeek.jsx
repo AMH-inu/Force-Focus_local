@@ -2,7 +2,7 @@ import React from "react";
 import "./ScheduleWeek.css";
 
 // 스케줄 주간 뷰 컴포넌트
-export default function ScheduleWeek({ schedules }) {
+export default function ScheduleWeek({ schedules, onScheduleClick }) {
   const today = new Date(); // 오늘 날짜
   const currentWeekStart = new Date(today); // 이번 주 시작일 (일요일)
   currentWeekStart.setDate(today.getDate() - today.getDay()); // 일요일로 설정
@@ -75,9 +75,10 @@ export default function ScheduleWeek({ schedules }) {
 
                   return (
                     <div
-                      key={s.id}
+                    key={s.id}
                       className="schedule-block"
-                      style={{ top: `${top}px`, height: `${height}px` }}
+                      style={{ top: `${top}px`, height: `${height}px`, cursor: "pointer" }} // 커서 추가
+                      onClick={() => onScheduleClick && onScheduleClick(s)} // 클릭 이벤트 추가
                     >
                       <div className="task-title">{s.name}</div>
                       <div className="task-time">

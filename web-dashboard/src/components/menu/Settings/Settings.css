@@ -201,3 +201,36 @@
     transform: translateY(0);
   }
 }
+
+/* 다크 모드 스타일링 */
+.dark-theme .settings-layout { background: var(--bg-main); }
+
+.dark-theme .side-menu {
+  background: var(--bg-sidebar);
+  border-color: var(--border-color);
+}
+
+.dark-theme .side-menu li { color: var(--text-muted); }
+.dark-theme .side-menu li:hover { background: var(--border-color); }
+
+.dark-theme .main-content { background: var(--bg-main); }
+
+.dark-theme .settings-header h2 { color: var(--text-main); }
+.dark-theme .settings-divider { background-color: var(--border-color); }
+
+.dark-theme .settings-item {
+  background: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+.dark-theme .settings-item h3 { color: var(--text-main); }
+.dark-theme .settings-item p { color: var(--text-muted); }
+
+/* 설정 팝업창 */
+.dark-theme .popup-box {
+  background: var(--card-bg);
+  color: var(--text-main);
+}
+
+.dark-theme .popup-box h2 { color: var(--text-main); }
+.dark-theme .popup-box p { color: var(--text-muted); }

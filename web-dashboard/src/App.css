@@ -1,14 +1,33 @@
-/* 전체 페이지 스타일 */
+:root {
+  --bg-main: #f4f4f9;
+  --text-main: #111827;
+  --card-bg: #ffffff;
+  --border-color: #e5e7eb;
+}
+
+.dark-theme {
+  --bg-main: #0f172a;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --card-bg: #1e293b;
+  --border-color: #334155;
+}
+
+.main-content-area {
+  margin-left: 20%;
+  padding-top: 64px;
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  transition: all 0.3s ease;
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
-  background-color: #ffffff;
-  color: #222;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: var(--bg-main); /* 변수 적용 */
+  color: var(--text-main);          /* 변수 적용 */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* 제목 */
@@ -58,4 +77,32 @@ button:active {
 /* 반응형 정렬용 래퍼 */
 #root {
   text-align: center;
+}
+
+/* 메뉴바 하단 버튼 스타일 */
+.menu-bar__footer {
+  padding: 15px;
+  border-top: 1px solid var(--border-color);
+  margin-top: auto; /* 하단 밀착 */
+}
+
+.theme-toggle-btn {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-sidebar);
+  color: var(--text-main);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--border-color);
+}
+
+/* 기존 버튼 공통 스타일 유지하되 배경색 변수로 수정 권장 */
+button {
+  transition: background-color 0.25s ease, transform 0.1s ease;
 }

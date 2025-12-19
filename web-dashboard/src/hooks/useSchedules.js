@@ -63,12 +63,7 @@ export const useSchedules = () => {
   }, [fetchSchedules]);
 
   return {
-    schedules,
-    loading,
-    error,
-    addSchedule,
-    updateSchedule,
-    removeSchedule,
-    refreshSchedules: fetchSchedules,
+    schedules, loading, error,
+    addSchedule, updateSchedule, removeSchedule, refreshSchedules: fetchSchedules,
   };
 };

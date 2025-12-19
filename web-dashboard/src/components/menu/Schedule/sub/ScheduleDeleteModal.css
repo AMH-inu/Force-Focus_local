@@ -224,3 +224,25 @@
     opacity: 1;
   }
 }
+
+/* 다크 모드 스타일링 */
+.dark-theme .modal-content {
+  background-color: var(--card-bg);
+  color: var(--text-main);
+}
+
+.dark-theme .modal-content h2 { color: var(--text-main); }
+
+.dark-theme .modal-form label { color: var(--text-muted); }
+
+.dark-theme .modal-form input, 
+.dark-theme .modal-form textarea {
+  background-color: var(--bg-main);
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
+.dark-theme .cancel-btn {
+  background-color: var(--border-color) !important;
+  color: var(--text-main);
+}

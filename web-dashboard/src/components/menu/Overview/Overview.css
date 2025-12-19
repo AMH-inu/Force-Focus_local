@@ -1,23 +1,130 @@
 .overview-container {
   display: grid;
-  grid-template-columns: 2fr 1fr; /* 왼쪽 2, 오른쪽 1 비율 */
+  grid-template-columns: 2fr 1fr;
   gap: 16px;
   width: 100%;
   height: 100%;
-  min-height: calc(100vh - 50px);
+  min-height: calc(100vh - 56px);
   padding: 24px 32px;
   box-sizing: border-box;
-  background-color: #f9fafc;
+  background-color: #ffffff;
 }
+
+.dark-theme .overview-container { background-color: var(--bg-body); }
 
 /* 왼쪽 일정 영역 */
 .overview-left {
   display: flex;
   flex-direction: column;
-  background-color: #f5f7fb;
+  background-color: #f8fafc;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  height: 100%; 
+  max-height: calc(100vh - 104px);
+}
+
+.dark-theme .overview-left {
+  background-color: var(--card-bg); /* 변수 적용 */
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
+.dark-theme .overview-today-date { color: var(--text-muted); }
+
+.dark-theme .schedule-title-link { color: var(--text-main); }
+
+.overview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+/* 오늘 날짜 기본 스타일 */
+.overview-today-date {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #4b5563;
+  flex: 1;
+  text-align: center;
+}
+
+/* 일요일 색상 (빨간색) */
+.overview-today-date.sunday {
+  color: #ef4444; 
+}
+
+/* 토요일 색상 (파란색) */
+.overview-today-date.saturday {
+  color: #3b82f6;
+}
+
+/* 제목 라벨 스타일 */
+.schedule-title-link {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #111827;
+  cursor: pointer;
+  transition: color 0.2s;
+  flex: 0 0 auto;
+}
+
+.schedule-title-link:hover {
+  color: #4f46e5;
+}
+
+/* 시간표 영역 (상자 전체) */
+.schedule-area {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
   border-radius: 10px;
-  padding: 16px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.dark-theme .schedule-area {
+  background: var(--bg-main);
+  border-color: var(--border-color);
+}
+
+/* 상자에 호버 시 시각적 피드백 */
+.schedule-area:hover {
+  border-color: #4f46e5;
+}
+
+/* 제목 스타일 */
+.schedule-area h3 {
+  margin: 0 0 16px 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #111827;
+  pointer-events: none;
+}
+
+.dark-theme .schedule-area h3, .schedule-area h4 { color: var(--text-main); }
+
+/* 미리보기 콘텐츠 영역 */
+.schedule-preview-content {
+  flex: 1;
+  width: 100%;
+  overflow: auto; 
+  background-color: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #f3f4f6;
+  pointer-events: auto; 
+}
+
+.dark-theme.schedule-preview-content {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
 }
 
 /* 상단 버튼 줄 */
@@ -25,29 +132,48 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
-/* 보기 버튼 */
+.view-buttons {
+  display: flex;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.dark-theme .view-buttons button {
+  background-color: var(--bg-sidebar);
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}
+
+/* 보기 버튼 (일/주/월) */
 .view-buttons button {
-  background-color: #e0e7ff;
-  border: none;
-  color: #1e3a8a;
+  background-color: #f1f5f9;
+  border: 1px solid #d1d5db;
+  color: #475569;
+  font-family: "Pretendard", sans-serif;
   font-weight: 600;
-  margin-right: 6px;
-  padding: 6px 10px;
+  padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .view-buttons button:hover {
-  background-color: #c7d2fe;
+  background-color: #e2e8f0;
+}
+
+/* 활성화된 뷰 모드 버튼 스타일 */
+.view-buttons button.active {
+  background-color: #4f46e5;
+  color: #ffffff;
+  border-color: #4f46e5;
 }
 
 /* 추가/삭제 버튼 */
 .action-buttons button {
-  padding: 6px 12px;
+  padding: 8px 16px;
   border-radius: 6px;
   border: none;
   cursor: pointer;
@@ -56,47 +182,54 @@
 }
 
 .add-btn {
-  background-color: #3b82f6;
+  background-color: #4f46e5;
   color: #fff;
-}
-
-.add-btn:hover {
-  background-color: #2563eb;
 }
 
 .delete-btn {
   background-color: #ef4444;
   color: #fff;
-  margin-left: 6px;
+  margin-left: 8px;
 }
 
-.delete-btn:hover {
-  background-color: #dc2626;
-}
-
-/* 시간표 영역 */
+/* 시간표 영역 및 미리보기 컨테이너 */
 .schedule-area {
   flex: 1;
   background: #ffffff;
-  border-radius: 8px;
-  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
 .schedule-area h4 {
-  margin: 0 0 8px;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #1e3a8a;
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.schedule-placeholder {
+/* 미리보기 컴포넌트가 렌더링될 실제 영역 */
+.schedule-preview-content {
+  flex: 1;
   width: 100%;
-  height: 100%;
-  min-height: 400px;
-  background-color: #f1f5f9;
+  overflow-y: auto;
+  border: 1px solid #f3f4f6;
   border-radius: 6px;
+}
+
+.schedule-preview-content > div {
+  transform-origin: top left;
+}
+
+.dark-theme .schedule-preview-content {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
 }
 
 /* 오른쪽 카드 영역 */
@@ -108,32 +241,49 @@
 
 .card {
   flex: 1;
-  background-color: #f5f7fb;
-  border-radius: 10px;
-  padding: 16px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  background-color: #ffffff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dark-theme .card {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+.dark-theme .card h4 { color: var(--text-main); }
+.dark-theme .card p { color: var(--text-muted); }
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: #4f46e5;
 }
 
 .card h4 {
-  margin: 0 0 8px;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #1e3a8a;
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #111827;
 }
 
 .card p {
-  font-size: 0.95rem;
-  color: #374151;
-  line-height: 1.5;
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.6;
 }
 
-
-/* 반응형 (태블릿 이하) */
+/* 반응형 처리 */
 @media (max-width: 1024px) {
   .overview-container {
     grid-template-columns: 1fr;
+    padding: 16px;
+  }
+  
+  .schedule-preview-content {
+    min-height: 400px;
   }
 }
