@@ -8,8 +8,9 @@ use tauri::{
 pub fn setup_tray_menu<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
     // 1. 메뉴 아이템 생성
     let quit_i = MenuItem::with_id(app, "quit", "종료 (Quit)", true, None::<&str>)?;
-    let show_hide_i = MenuItem::with_id(app, "toggle", "열기/숨기기 (Show/Hide)", true, None::<&str>)?;
-    
+    let show_hide_i =
+        MenuItem::with_id(app, "toggle", "열기/숨기기 (Show/Hide)", true, None::<&str>)?;
+
     // 2. 메뉴 구성
     let menu = Menu::with_items(app, &[&show_hide_i, &quit_i])?;
 
@@ -38,14 +39,14 @@ pub fn setup_tray_menu<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
             }
         })
         .on_tray_icon_event(|tray, event| {
-             // (선택) 트레이 아이콘 클릭 시 동작 (예: 메인 창 열기)
-             if let TrayIconEvent::Click { .. } = event {
-                 let app = tray.app_handle();
-                 if let Some(window) = app.get_webview_window("main") {
-                     let _ = window.show();
-                     let _ = window.set_focus();
-                 }
-             }
+            // (선택) 트레이 아이콘 클릭 시 동작 (예: 메인 창 열기)
+            if let TrayIconEvent::Click { .. } = event {
+                let app = tray.app_handle();
+                if let Some(window) = app.get_webview_window("main") {
+                    let _ = window.show();
+                    let _ = window.set_focus();
+                }
+            }
         })
         .build(app)?;
 
