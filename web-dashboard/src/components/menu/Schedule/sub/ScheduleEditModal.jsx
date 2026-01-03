@@ -1,19 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ScheduleEditModal.css";
 import { useScheduleStore } from "../ScheduleStore";
 
 export default function ScheduleEditModal({ schedule, onClose }) {
-  // Store에서 삭제 및 추가 함수 가져오기
   const { addSchedule, deleteSchedule } = useScheduleStore();
+  const [taskSessions, setTaskSessions] = useState([]);
 
-  // 기존 일정 데이터로 초기 상태 설정
+  useEffect(() => {
+    const savedSessions = localStorage.getItem('task-db-sessions');
+    if (savedSessions) {
+      const parsedSessions = JSON.parse(savedSessions);
+      setTaskSessions(parsedSessions);
+
+      const taskExists = parsedSessions.some(task => task.id === schedule.taskId);
+      if (!taskExists && schedule.taskId) {
+        setFormData(prev => ({ ...prev, taskId: "" }));
+      }
+    } else {
+      setTaskSessions([]);
+      setFormData(prev => ({ ...prev, taskId: "" }));
+    }
+  }, [schedule]);
+
   const [formData, setFormData] = useState({
-    name: schedule.name,
-    description: schedule.description,
-    start_date: schedule.start_date,
-    start_time: schedule.start_time,
-    due_date: schedule.due_date,
-    due_time: schedule.due_time,
+    ...schedule,
+    taskId: schedule.taskId || "" // 기존 연결된 작업이 있으면 로드
   });
 
   const handleChange = (e) => {
@@ -23,25 +34,18 @@ export default function ScheduleEditModal({ schedule, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // 1. 기존 ID를 가진 일정을 삭제
     deleteSchedule(schedule.id);
-
-    // 2. 수정된 데이터를 새 일정으로 추가
-    // (Zustand persist 구조상 ID는 addSchedule 내부에서 새로 생성됨)
     addSchedule(formData);
-
     alert("일정이 수정되었습니다.");
     onClose();
   };
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
+      <div className="modal-content large">
         <div className="modal-header">
           <h2>일정 수정</h2>
         </div>
-
         <form onSubmit={handleSubmit} className="modal-form">
           <div className="form-group">
             <label>일정 이름</label>
@@ -50,9 +54,24 @@ export default function ScheduleEditModal({ schedule, onClose }) {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="예: 팀 회의, 코딩 작업 등"
               required
             />
+          </div>
+
+          {/* 작업 선택 섹션 추가 */}
+          <div className="form-group">
+            <label>작업 종류</label>
+            <select 
+              name="taskId" 
+              value={formData.taskId} 
+              onChange={handleChange} 
+              required
+            >
+              <option value="">-- 작업 종류를 선택하세요 --</option>
+              {taskSessions.map(task => (
+                <option key={task.id} value={task.id}>{task.label}</option>
+              ))}
+            </select>
           </div>
 
           <div className="form-group">
@@ -61,64 +80,34 @@ export default function ScheduleEditModal({ schedule, onClose }) {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              placeholder="예: 프론트엔드 대시보드 기능 구현"
-              rows="3"
             />
           </div>
 
           <div className="form-row">
             <div className="form-group">
               <label>시작 날짜</label>
-              <input
-                type="date"
-                name="start_date"
-                value={formData.start_date}
-                onChange={handleChange}
-                required
-              />
+              <input type="date" name="start_date" value={formData.start_date} onChange={handleChange} required />
             </div>
             <div className="form-group">
               <label>시작 시간</label>
-              <input
-                type="time"
-                name="start_time"
-                value={formData.start_time}
-                onChange={handleChange}
-                required
-              />
+              <input type="time" name="start_time" value={formData.start_time} onChange={handleChange} required />
             </div>
           </div>
 
           <div className="form-row">
             <div className="form-group">
               <label>종료 날짜</label>
-              <input
-                type="date"
-                name="due_date"
-                value={formData.due_date}
-                onChange={handleChange}
-                required
-              />
+              <input type="date" name="due_date" value={formData.due_date} onChange={handleChange} required />
             </div>
             <div className="form-group">
               <label>종료 시간</label>
-              <input
-                type="time"
-                name="due_time"
-                value={formData.due_time}
-                onChange={handleChange}
-                required
-              />
+              <input type="time" name="due_time" value={formData.due_time} onChange={handleChange} required />
             </div>
           </div>
 
           <div className="modal-footer">
-            <button type="button" className="cancel-btn" onClick={onClose}>
-              취소
-            </button>
-            <button type="submit" className="save-btn">
-              변경사항 저장
-            </button>
+            <button type="button" className="cancel-btn" onClick={onClose}>취소</button>
+            <button type="submit" className="save-btn">변경사항 저장</button>
           </div>
         </form>
       </div>

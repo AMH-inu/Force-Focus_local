@@ -16,13 +16,18 @@
 /* 2. 모달 컨텐츠 박스 */
 .modal-content {
   background-color: #ffffff;
-  width: 100%;
-  max-width: 500px; /* PC 최적화 너비 */
-  padding: 32px;
+  width: 650px;
+  max-width: 95%;
+  padding: 28px;
   border-radius: 16px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   font-family: "Pretendard", sans-serif;
   animation: modalAppear 0.3s ease-out;
+  box-sizing: border-box; 
+}
+
+.modal-content.large {
+  width: 800px;
 }
 
 @keyframes modalAppear {
@@ -51,6 +56,22 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.modal-form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.modal-form select:focus {
+  border-color: #3b82f6;
+  outline: none;
 }
 
 .form-group {
@@ -89,6 +110,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  width: 100%;
 }
 
 /* 6. 푸터 및 버튼 영역 */
@@ -99,37 +121,74 @@
   margin-top: 32px;
 }
 
-.modal-footer button {
+.cancel-btn {
+  background-color: #f3f4f6 !important;
+  color: #4b5563 !important;
   padding: 12px 24px;
   border-radius: 8px;
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  border: none;
 }
 
-/* 취소 버튼 */
-.cancel-btn {
-  background-color: #f3f4f6;
-  color: #4b5563;
-}
-
-.cancel-btn:hover {
-  background-color: #e5e7eb;
-}
-
-/* 저장 버튼 */
 .save-btn {
-  background-color: #4f46e5;
-  color: #ffffff;
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .save-btn:hover {
-  background-color: #4338ca;
+  background-color: #4338ca !important;
   transform: translateY(-1px);
 }
 
-.save-btn:active {
-  transform: translateY(0);
+.dark-theme .modal-content {
+  background-color: #1e293b;
+  box-sizing: border-box;
+}
+
+.dark-theme .modal-header {
+  border-bottom: 1px solid #334155;
+}
+
+.dark-theme .modal-header h2 {
+  color: #ffffff;
+}
+
+.dark-theme .form-group label {
+  color: #94a3b8;
+}
+
+.dark-theme .modal-form input,
+.dark-theme .modal-form textarea,
+.dark-theme .modal-form select {
+  background-color: #111827;
+  border: 1px solid #334155;
+  color: #f8fafc;
+}
+
+.dark-theme .modal-form input:focus,
+.dark-theme .modal-form select:focus {
+  border-color: #2563eb;
+  background-color: #0f172a;
+}
+
+.dark-theme .cancel-btn {
+  background-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+.dark-theme .save-btn {
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+}
+
+.dark-theme .modal-footer {
+  border-top: 1px solid #334155;
 }

@@ -1,19 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ScheduleAddModal.css";
 import { useScheduleStore } from '../ScheduleStore';
 
-// 일정 추가 모달 컴포넌트
 export default function ScheduleAddModal({ onClose }) {
-  const addSchedule = useScheduleStore((state) => state.addSchedule); // Zustand 전역 스토어에서 추가 함수 가져오기
+  const addSchedule = useScheduleStore((state) => state.addSchedule);
+  const [taskSessions, setTaskSessions] = useState([]);
+
+  useEffect(() => {
+    const savedSessions = localStorage.getItem('task-db-sessions');
+    if (savedSessions) {
+      setTaskSessions(JSON.parse(savedSessions));
+    } else {
+      setTaskSessions([]);
+    }
+  }, []);
 
   const [form, setForm] = useState({
     name: "",
+    taskId: "",
     description: "",
     start_date: "",
     start_time: "",
     due_date: "",
     due_time: "",
-  }); // 각 스케줄의 필드 상태 관리 (추후 수정 가능)
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,94 +32,84 @@ export default function ScheduleAddModal({ onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!form.name || !form.start_date || !form.due_date) {
-      alert("필수 항목을 입력해주세요.");
+    if (!form.taskId) {
+      alert("연결할 작업을 선택해 주세요.");
       return;
     }
-
-    addSchedule(form); // Zustand 전역 스토어에 추가
-    onClose(); // 닫기
+    addSchedule(form);
+    alert("일정이 정상적으로 추가되었습니다.");
+    onClose();
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content large">
-        <h2>새 일정 추가</h2>
+        <div className="modal-header">
+          <h2>새 일정 추가</h2>
+        </div>
         <form onSubmit={handleSubmit} className="modal-form">
-          <label>
-            일정 이름
+          <div className="form-group">
+            <label>일정 이름</label>
             <input
               type="text"
               name="name"
-              placeholder="예: 팀 회의, 코딩 작업 등"
+              placeholder="일정의 이름을 입력하세요"
               value={form.name}
               onChange={handleChange}
               required
             />
-          </label>
+          </div>
 
-          <label>
-            설명
+          <div className="form-group">
+            <label>작업 종류</label>
+            <select 
+              name="taskId" 
+              value={form.taskId} 
+              onChange={handleChange} 
+              required
+            >
+              <option value="">-- 작업 종류를 선택하세요 --</option>
+              {taskSessions.map(task => (
+                <option key={task.id} value={task.id}>{task.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>상세 설명</label>
             <textarea
               name="description"
-              placeholder="예: 프론트엔드 대시보드 기능 구현"
+              placeholder="상세 설명을 입력하세요"
               value={form.description}
               onChange={handleChange}
             />
-          </label>
+          </div>
 
-          <label>
-            시작 날짜
-            <input
-              type="date"
-              name="start_date"
-              value={form.start_date}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          <div className="form-row">
+            <div className="form-group">
+              <label>시작 날짜</label>
+              <input type="date" name="start_date" value={form.start_date} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label>시작 시간</label>
+              <input type="time" name="start_time" value={form.start_time} onChange={handleChange} required />
+            </div>
+          </div>
 
-          <label>
-            시작 시간
-            <input
-              type="time"
-              name="start_time"
-              value={form.start_time}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          <div className="form-row">
+            <div className="form-group">
+              <label>종료 날짜</label>
+              <input type="date" name="due_date" value={form.due_date} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label>종료 시간</label>
+              <input type="time" name="due_time" value={form.due_time} onChange={handleChange} required />
+            </div>
+          </div>
 
-          <label>
-            종료 날짜
-            <input
-              type="date"
-              name="due_date"
-              value={form.due_date}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          <label>
-            종료 시간
-            <input
-              type="time"
-              name="due_time"
-              value={form.due_time}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          <div className="modal-actions">
-            <button type="submit" className="submit-btn">
-              저장
-            </button>
-            <button type="button" className="cancel-btn" onClick={onClose}>
-              취소
-            </button>
+          <div className="modal-footer">
+            <button type="button" className="cancel-btn" onClick={onClose}>취소</button>
+            <button type="submit" className="save-btn">일정 등록</button>
           </div>
         </form>
       </div>

@@ -9,6 +9,7 @@ export const useScheduleStore = create(
         {
           id: 1,
           name: "코딩 작업",
+          taskId: 101,
           description: "프론트엔드 대시보드 기능 구현",
           created_at: "2025-11-05",
           start_date: "2025-11-08",
@@ -19,6 +20,7 @@ export const useScheduleStore = create(
         {
           id: 2,
           name: "팀 회의",
+          taskId: 102,
           description: "AI 시스템 진행 상황 점검",
           created_at: "2025-11-06",
           start_date: "2025-11-09",
@@ -29,6 +31,7 @@ export const useScheduleStore = create(
         {
           id: 3,
           name: "문서 작성",
+          taskId: 103,
           description: "발표 자료 정리",
           created_at: "2025-11-06",
           start_date: "2025-11-11",
@@ -45,12 +48,12 @@ export const useScheduleStore = create(
         const nextId = maxId + 1;
 
         const now = new Date();
-        const formattedDate = now.toISOString().split("T")[0]; // yyyy-mm-dd 형태
+        const formattedDate = now.toISOString().split("T")[0];
 
-        // 새 일정 구조를 기존과 완전히 동일하게 맞춤
         const scheduleToAdd = {
           id: nextId,
           name: newSchedule.name || "제목 없음",
+          taskId: newSchedule.taskId || "",
           description: newSchedule.description || "",
           created_at: formattedDate,
           start_date: newSchedule.start_date,

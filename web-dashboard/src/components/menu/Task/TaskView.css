@@ -1,0 +1,455 @@
+/* 1. 컨테이너 및 헤더 영역 (좌측 정렬 및 설명 추가) */
+.task-container {
+  padding: 32px;
+  width: 100%;
+  transition: color 0.3s;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 32px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 20px;
+  font-family: "Inter", "Pretendard", "Noto Sans KR", sans-serif; /* 기본 폰트 수정 */
+}
+
+.header-text {
+  text-align: left;
+}
+
+.header-text h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #111;
+}
+
+.task-description {
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: 8px;
+}
+
+/* 2. 그리드 레이아웃 및 세션 카드 */
+.task-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.session-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  height: 320px;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  box-sizing: border-box;
+}
+
+.session-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.card-divider {
+  height: 1px;
+  background-color: #f1f5f9;
+  margin: 16px 0;
+  flex-shrink: 0;
+}
+
+.session-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.session-icon {
+  font-size: 1.3rem;
+}
+
+/* 3. 다중 프로그램 경로 입력 리스트 UI */
+.empty-path-message {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.path-input-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.scrollable-path-area {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.scrollable-path-area::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollable-path-area::-webkit-scrollbar-thumb {
+  background-color: #e2e8f0;
+  border-radius: 10px;
+}
+
+.path-input-list label {
+  font-size: 0.8rem;
+  color: #888;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.path-input-row {
+  display: flex;
+  gap: 12px;
+}
+
+.path-input-row input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background: #fcfcfc;
+}
+
+.remove-path-btn {
+  background: #f3f4f6 !important;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.remove-path-btn:hover {
+  background: #fee2e2 !important;
+  color: #ef4444;
+}
+
+.add-path-row-btn {
+  background: #ffffff !important;
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 0.8rem;
+  color: #666;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 10px;
+  transition: all 0.2s;
+}
+
+.add-path-row-btn:hover {
+  background: #f9fafb;
+  border-style: solid;
+  color: #2563eb;
+}
+
+/* 4. 버튼 공통 스타일 (흰색 테마) */
+.add-task-btn, .cancel-btn {
+  background: #ffffff !important;
+  color: #374151 !important;
+  border: 1px solid #d1d5db !important;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.add-task-btn:hover {
+  background: #f9fafb !important;
+  border-color: #9ca3af !important;
+  transform: translateY(-1px);
+}
+
+.delete-session-btn {
+  background: none !important;
+  border: none;
+  color: #9ca3af !important;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.delete-session-btn:hover {
+  color: #ef4444 !important;
+}
+
+.path-input-list:not(:has(.path-input-row)) label {
+  display: none;
+}
+
+.path-input-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.path-input-list label {
+  font-size: 0.8rem;
+  color: #888;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.save-db-btn {
+  background: #2563eb !important;
+  color: white !important;
+  border: 1px solid #1d4ed8 !important;
+  padding: 10px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.85rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  margin-right: 12px;
+}
+
+.save-db-btn:hover {
+  background: #1d4ed8 !important;
+  transform: translateY(-1px);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+/* 5. 모달 스타일 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: 20px;
+  width: 600px;
+  max-width: 90%;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-header {
+  padding: 28px 32px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column; 
+  text-align: left;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.modal-header p {
+  margin: 8px 0 0; 
+  font-size: 0.9rem;
+  color: #64748b;
+  line-height: 1.4;
+  display: block;
+}
+
+.modal-body {
+  padding: 32px;
+}
+
+.modal-body .path-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-body .path-input-group label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #334155;
+  text-align: left;
+}
+
+.modal-body .path-input-group input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  font-size: 1rem;
+  color: #0f172a;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.modal-body .path-input-group input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.modal-footer {
+  padding: 20px 32px;
+  background: #f8fafc;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* 모달 전용 버튼 스타일 */
+.modal-cancel-btn {
+  background: #ffffff !important;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-confirm-btn {
+  background: #2563eb !important;
+  color: #ffffff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-confirm-btn:hover {
+  background: #1d4ed8 !important;
+  transform: translateY(-1px);
+}
+
+/* 6. 다크 모드 대응 */
+.dark-theme .task-container { color: #f3f4f6; }
+.dark-theme .header-text h2 { color: #fff; }
+.dark-theme .task-description { color: #9ca3af; }
+.dark-theme .task-header { border-color: #374151; }
+
+.dark-theme .session-card, 
+.dark-theme .modal-content { background: #1e293b !important; border: 1px solid #334155; }
+.dark-theme .modal-header { background: #1e293b !important; border-bottom: 1px solid #334155; }
+.dark-theme .modal-header h3 { color: #f8fafc; }
+.dark-theme .modal-footer { background: #0f172a !important; border-top: 1px solid #334155; }
+.dark-theme .modal-cancel-btn { background: #1e293b !important; color: #94a3b8; border-color: #334155; }
+.dark-theme .modal-cancel-btn:hover { background: #334155 !important; color: white; }
+
+.dark-theme .path-input-row input,
+.dark-theme .path-input-group input { 
+  background: #111827; 
+  border-color: #4b5563; 
+  color: white; 
+}
+
+.dark-theme .add-task-btn, 
+.dark-theme .cancel-btn,
+.dark-theme .remove-path-btn {
+  background: #374151 !important;
+  color: #f3f4f6 !important;
+  border-color: #4b5563 !important;
+}
+
+.dark-theme .add-path-row-btn {
+  background: #1f2937 !important;
+  border-color: #4b5563;
+  color: #9ca3af;
+}
+
+.dark-theme .card-divider {
+  background-color: #334155;
+}
+
+.dark-theme .add-task-btn { background: #374151 !important; }
+.dark-theme .add-task-btn:hover { background: #4b5563 !important; }
+.dark-theme .delete-session-btn:hover { color: #f87171 !important; }
+
+.dark-theme .add-path-row-btn:hover {
+  background: #2d3748 !important;
+  border-style: solid;
+  border-color: #60a5fa !important;
+  color: #60a5fa !important;
+}
+
+.dark-theme .path-input-row input:hover,
+.dark-theme .path-input-group input:hover {
+  border-color: #4b5563;
+  background: #1f2937;
+}
+
+.dark-theme .modal-body .path-input-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: #111827;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.dark-theme .add-path-row-btn:disabled {
+  background: #1a202c !important;
+  color: #4a5568 !important;
+  border-color: #2d3748 !important;
+  cursor: not-allowed;
+}
+
+/* fadeIn Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

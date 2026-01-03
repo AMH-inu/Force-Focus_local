@@ -12,12 +12,16 @@ const useMainStore = create(
       activeMenu: 'Overview',
       setActiveMenu: (menu) => set({ activeMenu: menu }),
       
-      // 3. 도움말 모달 열림/닫힘 상태
+      // 3. 작업 변경 사항 추적
+      isDirty: false,
+      setIsDirty: (status) => set({ isDirty: status }),
+
+      // 4. 도움말 모달 열림/닫힘 상태
       isHelpOpen: false,
       openHelp: () => set({ isHelpOpen: true }),
       closeHelp: () => set({ isHelpOpen: false }),
 
-      // 4. 다크모드 상태 및 토글 함수
+      // 5. 다크모드 상태 및 토글 함수
       isDarkMode: false,
       toggleDarkMode: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
     }),

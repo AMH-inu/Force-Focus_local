@@ -54,6 +54,38 @@
   transition: background 0.2s ease, border-color 0.2s ease;
   position: relative;
 }
+.delete-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.delete-task-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #4f46e5;
+  background-color: #eef2ff;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid #e0e7ff;
+  white-space: nowrap;
+}
+
+/* 다크 모드 대응 */
+.dark-theme .delete-task-badge {
+  background-color: #1e1b4b;
+  color: #a5b4fc;
+  border-color: #312e81;
+}
+
+/* 기존 카드 내부 정보 여백 수정 */
+.delete-schedule-info {
+  margin-left: 42px;
+  text-align: left;
+  flex: 1;
+}
 
 /* 카드 좌측 영역 */
 .delete-card-left {
@@ -225,24 +257,76 @@
   }
 }
 
-/* 다크 모드 스타일링 */
-.dark-theme .modal-content {
-  background-color: var(--card-bg);
-  color: var(--text-main);
+/*  다크 모드 대응 보완 (.dark-theme 클래스 기준) */
+
+.dark-theme .delete-modal-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
-.dark-theme .modal-content h2 { color: var(--text-main); }
-
-.dark-theme .modal-form label { color: var(--text-muted); }
-
-.dark-theme .modal-form input, 
-.dark-theme .modal-form textarea {
-  background-color: var(--bg-main);
-  border-color: var(--border-color);
-  color: var(--text-main);
+.dark-theme .delete-modal {
+  background: #1e293b;
+  border: 1px solid #334155;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
-.dark-theme .cancel-btn {
-  background-color: var(--border-color) !important;
-  color: var(--text-main);
+.dark-theme .delete-modal-title {
+  color: #f8fafc;
+}
+
+.dark-theme .delete-schedule-card {
+  background: #111827;
+  border-color: #374151;
+}
+
+.dark-theme .delete-schedule-card:hover {
+  background: #1f2937;
+  border-color: #4b5563;
+}
+
+.dark-theme .delete-schedule-name {
+  color: #f1f5f9;
+}
+
+.dark-theme .delete-schedule-time {
+  color: #94a3b8;
+}
+
+.dark-theme .delete-schedule-desc {
+  color: #64748b;
+}
+
+.dark-theme .confirm-section p {
+  color: #e2e8f0;
+}
+
+.dark-theme .delete-empty-text {
+  color: #64748b;
+}
+
+.dark-theme .delete-cancel-btn,
+.dark-theme .confirm-no {
+  background: #334155 !important;
+  color: #f1f5f9;
+}
+
+.dark-theme .delete-cancel-btn:hover,
+.dark-theme .confirm-no:hover {
+  background: #475569 !important;
+}
+
+.dark-theme .delete-main-btn:disabled {
+  background: #7f1d1d;
+  color: #fca5a5;
+  opacity: 0.5;
+}
+
+.dark-theme .confirm-yes {
+  background: #2563eb;
+}
+.dark-theme .confirm-yes:hover {
+  background: #3b82f6;
+}
+
+.dark-theme .delete-schedule-list::-webkit-scrollbar-thumb {
+  background-color: #4b5563;
 }

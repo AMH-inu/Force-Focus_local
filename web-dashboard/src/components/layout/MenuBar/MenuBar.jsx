@@ -3,18 +3,31 @@ import useMainStore from '../../../MainStore.jsx'
 
 export default function MenuBar() {
   // Store에서 다크모드 상태와 토글 함수를 함께 가져옵니다.
-  const { isOpen, toggleMenu, activeMenu, setActiveMenu, isDarkMode, toggleDarkMode } = useMainStore()
+  const { 
+    isOpen, toggleMenu, activeMenu, setActiveMenu, 
+    isDarkMode, toggleDarkMode, isDirty, setIsDirty 
+  } = useMainStore();
 
   const menus = [
     { icon: '🏠', label: 'Overview' },
     { icon: '📝', label: '스케줄' },
+    { icon: '🛠️', label: '작업' },
     { icon: '📊', label: '활동 요약' },
     { icon: '🚨', label: '피드백' },
     { icon: '⚙️', label: '설정' },
   ]
 
+  const handleMenuClick = (menuLabel) => {
+    if (activeMenu === '작업' && menuLabel !== '작업' && isDirty) {
+      const leaveConfirm = window.confirm("변경된 사항이 저장되지 않았습니다."); 
+      if (!leaveConfirm) return;
+      setIsDirty(false);
+    }
+    setActiveMenu(menuLabel); // 메뉴 이동 승인
+  };
+
   return (
-    <aside className={`menu-bar ${isOpen ? '' : 'collapsed'} ${isDarkMode ? 'dark' : ''}`}>
+    <aside className={`menu-bar ${isOpen ? '' : 'collapsed'} ${isDarkMode ? 'dark-theme' : ''}`}>
       <div className="menu-bar__header">
         <span className="menu-bar__title">{isOpen ? 'MENU' : '≡'}</span>
         <button className="menu-bar__toggle" onClick={toggleMenu}>
@@ -22,14 +35,13 @@ export default function MenuBar() {
         </button>
       </div>
 
-      {/* 메뉴 상단 리스트 영역 */}
       <nav className="menu-bar__nav">
         <ul className="menu-bar__list">
           {menus.map((menu) => (
             <li
               key={menu.label}
               className={`menu-bar__item ${activeMenu === menu.label ? 'active' : ''}`}
-              onClick={() => setActiveMenu(menu.label)}
+              onClick={() => handleMenuClick(menu.label)}
             >
               <span className="menu-bar__icon">{menu.icon}</span>
               {isOpen && <span className="menu-bar__label">{menu.label}</span>}
@@ -38,7 +50,6 @@ export default function MenuBar() {
         </ul>
       </nav>
 
-      {/* 메뉴바 맨 아래쪽에 위치할 다크 모드 전환 버튼 영역 */}
       <div className="menu-bar__footer">
         <ul className="menu-bar__list">
           <li className="menu-bar__item theme-toggle-item" onClick={toggleDarkMode}>

@@ -1,12 +1,26 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./ScheduleList.css";
 
-// 일정 목록 컴포넌트
 const ScheduleList = ({ schedules = [], onScheduleClick }) => {
-  // 기본적으로 최신순 정렬 (가장 최근 일정이 위로)
+  // 작업 목록을 가져와서 taskId에 해당하는 작업 이름을 매핑하기 위함
+  const [taskSessions, setTaskSessions] = useState([]);
+
+  useEffect(() => {
+    const savedSessions = localStorage.getItem('task-db-sessions');
+    if (savedSessions) {
+      setTaskSessions(JSON.parse(savedSessions));
+    }
+  }, []);
+
   const sortedSchedules = [...schedules].sort(
     (a, b) => new Date(b.start_date + " " + b.start_time) - new Date(a.start_date + " " + a.start_time)
   );
+
+  // taskId를 통해 작업 라벨을 찾는 함수
+  const getTaskLabel = (taskId) => {
+    const task = taskSessions.find(t => t.id === taskId);
+    return task ? task.label : "연결된 작업 없음";
+  };
 
   return (
     <div className="schedule-list-container">
@@ -18,11 +32,15 @@ const ScheduleList = ({ schedules = [], onScheduleClick }) => {
         <div className="schedule-card-list">
           {sortedSchedules.map((item) => (
             <div key={item.id} className="schedule-card"
-            style={{ cursor: "pointer" }}
-            onClick={() => onScheduleClick && onScheduleClick(item)}
+              style={{ cursor: "pointer" }}
+              onClick={() => onScheduleClick && onScheduleClick(item)}
             >
               <div className="card-header">
-                <h3 className="card-title">{item.name}</h3>
+                <div className="title-row">
+                  <h3 className="card-title">{item.name}</h3>
+                  {/* 연결된 작업 유형을 태그 형태로 출력 */}
+                  <span className="task-badge">{getTaskLabel(item.taskId)}</span>
+                </div>
                 <span className="card-date">
                   {item.start_date} {item.start_time} ~ {item.due_date} {item.due_time}
                 </span>
