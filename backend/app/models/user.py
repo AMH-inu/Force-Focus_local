@@ -40,3 +40,4 @@ class UserInDB(BaseModel):
         "arbitrary_types_allowed": True,
         "from_attributes": True,           # orm_mode 대응
     }
+

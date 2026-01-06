@@ -17,7 +17,6 @@ class EventInDB(BaseModel):
     user_id: str
     session_id: Optional[str] = None
     timestamp: datetime
-
     app_name: Optional[str] = None
     window_title: Optional[str] = None
     activity_vector: Dict[str, Any] = Field(default_factory=dict)
@@ -34,3 +33,4 @@ class EventInDB(BaseModel):
         "arbitrary_types_allowed": True,
         "from_attributes": True,
     }
+
