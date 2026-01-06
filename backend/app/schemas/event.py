@@ -1,19 +1,45 @@
-# 파일 위치: backend/app/schemas/event.py
-
-from pydantic import BaseModel
 from datetime import datetime
 from typing import Dict, Optional, Any, List
+from pydantic import BaseModel, Field
+
 
 class EventCreate(BaseModel):
     """
-    [요청] POST /events
-    데스크탑 에이전트가 서버로 전송하는 단일 활동 이벤트의 데이터 구조입니다.
+    [요청] 단일 이벤트 생성
+    - user_id는 (보통) JWT에서 뽑지만, 테스트/확장 대비로 Optional 허용
     """
-    session_id: str
+    user_id: Optional[str] = None
+    session_id: Optional[str] = None
     timestamp: datetime
-    app_name: str
-    window_title: str
-    activity_vector: Dict[str, Any] # 예: [활성창 전환 빈도, 키 입력 빈도, 유휴 상태, 마우스 활동, 클립보드 활동]
+    app_name: Optional[str] = None
+    window_title: Optional[str] = None
+    activity_vector: Dict[str, Any] = Field(default_factory=dict)
+
+
+class EventBatchCreate(BaseModel):
+    """
+    [요청] 배치 이벤트 생성
+    {
+      "events": [ ... ]
+    }
+    """
+    events: List[EventCreate]
+
+
+class EventRead(BaseModel):
+    """
+    [응답] 이벤트 조회
+    """
+    id: str
+    user_id: str
+    session_id: Optional[str] = None
+    timestamp: datetime
+    app_name: Optional[str] = None
+    window_title: Optional[str] = None
+    activity_vector: Dict[str, Any] = Field(default_factory=dict)
+
+    model_config = {"from_attributes": True}
+
 
 # 배치 전송 요청 스키마
 class EventBatchCreate(BaseModel):
@@ -28,10 +54,13 @@ class EventBatchCreate(BaseModel):
 
 class EventCreateResponse(BaseModel):
     """
-    [응답] POST /events 성공 시
-    이벤트가 성공적으로 저장되었음을 알리는 응답 데이터 구조입니다.
+    [응답] 이벤트 생성/배치 생성 공용
+    - 단일 생성: event_id
+    - 배치 생성: count
     """
     status: str = "success"
+
     # 배치 처리 시에는 저장된 개수를 반환하는 것이 일반적
     count: Optional[int] = None
     event_id: Optional[str] = None
+

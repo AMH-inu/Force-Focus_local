@@ -1,11 +1,12 @@
 # backend/app/api/endpoints/web/tasks.py
+
 from fastapi import APIRouter, HTTPException, status
 from typing import List
 
 from app.schemas.task import TaskCreate, TaskUpdate, TaskRead
 from app.crud import tasks as task_crud
 
-router = APIRouter(tags=["Tasks"])
+router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 USER_ID = "test_user_123"
 

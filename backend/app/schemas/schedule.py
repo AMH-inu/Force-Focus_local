@@ -1,6 +1,14 @@
-from pydantic import BaseModel, conint, conlist
+# backend/app/schemas/schedule.py
+
+from pydantic import BaseModel, Field
 from datetime import datetime, time
-from typing import Optional
+from typing import Optional, Annotated
+
+# --- 타입 별칭 (Pylance 경고 제거 + 검증 규칙 유지) ---
+DayOfWeek = Annotated[int, Field(ge=0, le=6)]
+DaysOfWeekCreate = Annotated[list[DayOfWeek], Field(min_length=1)]
+DaysOfWeekUpdate = list[DayOfWeek] 
+
 
 # --- API 요청(Request) 스키마 ---
 
@@ -14,8 +22,8 @@ class ScheduleCreate(BaseModel):
     start_time: time
     end_time: time
     # 리스트 내부 요소는 0~6, 최소 1개 이상
-    days_of_week: conlist(conint(ge=0, le=6), min_length=1)
-    
+    days_of_week: DaysOfWeekCreate
+
 
 class ScheduleUpdate(BaseModel):
     """
@@ -27,8 +35,9 @@ class ScheduleUpdate(BaseModel):
     name: Optional[str] = None
     start_time: Optional[time] = None
     end_time: Optional[time] = None
-    days_of_week: Optional[conlist(conint(ge=0, le=6))] = None
+    days_of_week: Optional[DaysOfWeekUpdate] = None
     is_active: Optional[bool] = None
+
 
 # --- API 응답(Response) 스키마 ---
 
@@ -47,5 +56,6 @@ class ScheduleRead(BaseModel):
     created_at: datetime
     is_active: bool
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }

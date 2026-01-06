@@ -1,4 +1,4 @@
-# 파일 위치: backend/app/schemas/task.py
+# backend/app/schemas/task.py
 
 from pydantic import BaseModel
 from datetime import datetime
@@ -17,6 +17,7 @@ class TaskCreate(BaseModel):
     target_executable: Optional[str] = None
     target_arguments: Optional[str] = None
 
+
 class TaskUpdate(BaseModel):
     """
     [요청] PUT /tasks/{task_id}
@@ -26,10 +27,11 @@ class TaskUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     due_date: Optional[datetime] = None
-    status: Optional[str] = None # "pending", "completed" 등으로 변경
+    status: Optional[str] = None  # "pending", "completed" 등으로 변경
     linked_session_id: Optional[str] = None
     target_executable: Optional[str] = None
     target_arguments: Optional[str] = None
+
 
 # --- API 응답(Response) 스키마 ---
 class TaskRead(BaseModel):
@@ -48,5 +50,6 @@ class TaskRead(BaseModel):
     target_executable: Optional[str] = None
     target_arguments: Optional[str] = None
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }

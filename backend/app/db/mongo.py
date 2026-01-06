@@ -1,4 +1,5 @@
 # backend/app/db/mongo.py
+
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.core.config import settings
 
@@ -16,3 +17,8 @@ async def close_mongo_connection():
     if client:
         client.close()
         print("MongoDB Connection Closed!")
+
+def get_db():
+    if db is None:
+        raise RuntimeError("MongoDB not initialized. Did you call connect_to_mongo()?")
+    return db

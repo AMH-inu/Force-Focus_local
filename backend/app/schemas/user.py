@@ -1,62 +1,92 @@
-# 파일 위치: backend/app/schemas/user.py
-from pydantic import BaseModel, EmailStr
-from typing import Optional, List
+# backend/app/schemas/user.py
 
-# --- 기본 User 스키마 ---
+from datetime import datetime
+from typing import Optional, List, Dict, Any
+
+from pydantic import BaseModel, EmailStr, Field
+
+
 class UserBase(BaseModel):
-    email: EmailStr  # Pydantic이 이메일 형식을 자동으로 검증합니다.
+    email: EmailStr
 
-# --- API별 요청(Request) 스키마 ---
 
-class UserCreate(UserBase):
-    """
-    [요청] POST /users/register
-    회원가입 시 클라이언트가 보내는 데이터 구조입니다.
-    """
-    password: str
+# ---------- 요청 스키마 (/users/me/*) ----------
 
-class UserLogin(BaseModel):
+class SettingsPatch(BaseModel):
     """
-    [요청] POST /users/login
-    로그인 시 클라이언트가 보내는 데이터 구조입니다.
-    FastAPI의 OAuth2PasswordRequestForm은 'username' 필드를 사용하므로,
-    클라이언트는 'username' 필드에 이메일을 담아 보내야 합니다.
+    [요청] PATCH /users/me/settings
+    settings 부분 업데이트(merge)
     """
-    username: EmailStr
-    password: str
+    settings: Dict[str, Any]
 
-class SettingsUpdate(BaseModel):
-    """
-    [요청] PUT /users/me/settings
-    사용자 설정을 업데이트할 때 보내는 데이터 구조입니다.
-    모든 필드는 선택 사항(Optional)입니다.
-    """
-    notification_preferences: Optional[str] = None
-    theme_preference: Optional[str] = None
 
-# --- API별 응답(Response) 스키마 ---
+# 기존 코드가 SettingsUpdate를 import해도 안 깨지게 alias 제공
+class SettingsUpdate(SettingsPatch):
+    """
+    (호환용) SettingsPatch와 동일
+    """
+    pass
 
-class UserRead(UserBase):
+
+class FCMTokenAdd(BaseModel):
     """
-    [응답] GET /users/me 또는 회원가입 성공 시
-    서버가 클라이언트에게 보내주는 사용자 정보 데이터 구조입니다.
-    보안을 위해 password 필드는 포함되지 않습니다.
+    [요청] POST /users/me/fcm-tokens
+    단일 FCM 토큰 추가
     """
-    id: str
-    settings: Optional[dict] = None
-    blocked_apps: Optional[List[str]] = []
+    token: str
+
 
 class FCMTokenDelete(BaseModel):
     """
-    [요청] DELETE /users/me/fcm_token
-    특정 FCM 토큰을 삭제할 때 클라이언트가 보내는 데이터 구조입니다.
-    이 필드는 선택 사항이며, 없을 경우 현재 사용자에게 연결된 모든 토큰을 삭제합니다.
+    [요청] DELETE /users/me/fcm-tokens
+    - token 미지정 시 전체 삭제
+    - {"token": "..."} 또는 {"fcm_token": "..."} 모두 허용(호환)
     """
+    # 표준 필드명은 token
+    token: Optional[str] = None
+
+    # 호환 필드명 (예전 코드가 payload.fcm_token을 쓰는 경우 대비)
     fcm_token: Optional[str] = None
 
+    def resolved_token(self) -> Optional[str]:
+        """
+        endpoint에서 어떤 필드를 쓰든 안전하게 하나로 합치기 위한 헬퍼
+        """
+        return self.token or self.fcm_token
+
+
+class BlockedAppAdd(BaseModel):
+    """
+    [요청] POST /users/me/blocked-apps
+    차단 앱 후보 추가
+    """
+    app_name: str
+
+
+class BlockedAppDelete(BaseModel):
+    """
+    [요청] DELETE /users/me/blocked-apps
+    차단 앱 후보 제거
+    """
+    app_name: str
+
+
+# ---------- 응답 스키마 ----------
+
+class UserRead(UserBase):
+    id: str
+    created_at: datetime
+    last_login_at: Optional[datetime] = None
+
+    settings: Dict[str, Any] = Field(default_factory=dict)
+    blocked_apps: List[str] = Field(default_factory=list)
+    fcm_tokens: List[str] = Field(default_factory=list)
+
+    model_config = {
+        "from_attributes": True
+    }
+
+
 class SuccessMessage(BaseModel):
-    """
-    [응답] 일반적인 성공 메시지
-    """
     success: bool = True
     message: str = "Operation successful"
