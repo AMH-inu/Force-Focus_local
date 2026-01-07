@@ -69,6 +69,14 @@ export default function Overview() {
     }
   };
 
+  const handleMoveToSchedule = () => {
+  const viewMap = { "일": "day", "주": "week", "월": "month" };
+  const targetView = viewMap[viewMode] || "week";
+  
+  // Overview의 현재 viewMode를 인자로 넘기며 메뉴 이동
+  setActiveMenu("스케줄", targetView);
+};
+
   return (
     <div className="overview-container">
       {/* 1. 상단 섹션: 스케줄(좌) + 카드 2개(우) */}
@@ -79,7 +87,7 @@ export default function Overview() {
           <div className="overview-header">
             <h4 
               className="schedule-title-link"
-              onClick={() => setActiveMenu("스케줄")}
+              onClick={handleMoveToSchedule}
             >
               시간표 ❯
             </h4>

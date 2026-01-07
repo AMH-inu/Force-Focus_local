@@ -1,8 +1,8 @@
-/* 1. 컨테이너 및 헤더 영역 (좌측 정렬 및 설명 추가) */
+/* 1. 컨테이너 및 헤더 영역 */
 .task-container {
   padding: 32px;
   width: 100%;
-  transition: color 0.3s;
+  transition: all 0.3s ease;
 }
 
 .task-header {
@@ -132,6 +132,7 @@
   border-radius: 8px;
   font-size: 0.85rem;
   background: #fcfcfc;
+  color: #111827 !important;
 }
 
 .remove-path-btn {
@@ -163,7 +164,7 @@
   cursor: pointer;
   flex-shrink: 0;
   margin-top: 10px;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .add-path-row-btn:hover {
@@ -183,7 +184,7 @@
   font-weight: 600;
   font-size: 0.85rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .add-task-btn:hover {
@@ -200,7 +201,7 @@
   cursor: pointer;
   line-height: 1;
   padding: 4px;
-  transition: color 0.2s;
+  transition: all 0.3s ease;
 }
 
 .delete-session-btn:hover {
@@ -234,7 +235,7 @@
   font-weight: 700;
   font-size: 0.85rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   margin-right: 12px;
 }
 
@@ -325,7 +326,7 @@
   font-size: 1rem;
   color: #0f172a;
   box-sizing: border-box;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .modal-body .path-input-group input:focus {
@@ -353,7 +354,7 @@
   border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .modal-confirm-btn {
@@ -364,7 +365,7 @@
   border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .modal-confirm-btn:hover {

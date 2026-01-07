@@ -6,7 +6,7 @@
   border-radius: 10px;
   padding: 12px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 /* 제목 + 네비게이션 + 오늘 버튼 */
@@ -35,18 +35,18 @@
 
 /* 오늘 버튼 (제목 오른쪽 배치) */
 .today-btn-inline {
-  background: #3b82f6 !important;
-  color: white;
+  background: #ffffff !important;
+  color: #114184;
   border: none;
   border-radius: 6px;
   padding: 4px 10px;
   cursor: pointer;
   font-size: 0.85rem;
-  transition: background 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .today-btn-inline:hover {
-  background: #2563eb;
+  background: #d1d5db !important;
 }
 
 /* 이전/다음 달 버튼 */
@@ -57,7 +57,7 @@
   cursor: pointer;
   font-size: 0.85rem;
   padding: 2px 6px;
-  transition: background 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .nav-btn:hover {
@@ -72,7 +72,7 @@
   background: #f3f4f6;
   border-radius: 8px;
   align-content: start;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 /* 요일 헤더 */
@@ -86,7 +86,7 @@
   font-size: 0.9rem;
   height: 28px;
   line-height: 20px;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 /* 주말 요일 헤더 */
@@ -106,7 +106,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100px;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .month-cell:hover {
@@ -149,7 +149,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 /* 오늘 강조 */
@@ -180,3 +180,12 @@
 .dark-theme .day-number { color: var(--text-main); }
 .dark-theme .faded-cell { background-color: #0f172a; }
 .dark-theme .month-task { background-color: #312e81; color: #e0e7ff; }
+
+.dark-theme .today-btn-inline {
+  background: #1f2937 !important;
+  color: #f3f4f6;
+}
+
+.today-btn-inline:hover {
+  background: #374151 !important;
+}

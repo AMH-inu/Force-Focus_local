@@ -1,86 +1,155 @@
-/* 1. 기본 초기화 및 폰트 설정 */
+/* 1. 기본 설정 및 변수 통합 */
+:root {
+  --login-bg-start: #dbeafe; 
+  --login-bg-end: #eff6ff;
+  --pattern-opacity: 0.5;
+  --card-bg: rgba(255, 255, 255, 0.7);
+  --title-color: #1e293b;
+  --brand-color: #3b82f6;
+  --subtitle-color: #64748b;
+  --border-color: rgba(255, 255, 255, 0.5);
+  --footer-border: rgba(0, 0, 0, 0.05);
+  --notice-color: #94a3b8;
+  --shadow: rgba(0, 0, 0, 0.06);
+}
+
+.dark-theme, 
+.login-container.dark-theme {
+  --login-bg-start: #0f172a;
+  --login-bg-end: #1e293b;
+  --pattern-opacity: 0.2;
+  --card-bg: rgba(30, 41, 59, 0.7);
+  --title-color: #f8fafc;
+  --brand-color: #60a5fa;
+  --subtitle-color: #94a3b8;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --footer-border: rgba(255, 255, 255, 0.1);
+  --notice-color: #64748b;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  background-color: #f9fafb;
-}
-
+/* 2. 컨테이너 */
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100vw;
   height: 100vh;
-  background-color: #f9fafb;
+  background: linear-gradient(135deg, var(--login-bg-start) 0%, var(--login-bg-end) 100%);
   position: fixed;
   top: 0;
   left: 0;
   z-index: 3000;
+  overflow: hidden;
+  transition: background 0.3s ease;
 }
 
-/* 2. 로그인 폼 박스 (중앙 카드 디자인) */
-.login-form {
-  background: #ffffff;
-  width: 480px;
-  padding: 60px 40px;
-  border-radius: 24px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+/* 기하학적 패턴이 그라데이션을 가리지 않도록 z-index 확인 */
+.login-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(var(--brand-color) 0.8px, transparent 0.8px);
+  background-size: 32px 32px;
+  opacity: var(--pattern-opacity);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.login-wrapper {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  width: 100%;
+}
+
+/* 3. 카드 공통 스타일 */
+.brand-card, .login-form-card {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 20px 40px var(--shadow);
+  transition: all 0.3s ease;
+}
+
+/* 상단 브랜드 카드 */
+.brand-card {
+  width: 560px;
+  padding: 12px 25px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: row; 
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.login-brand-logo {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--brand-color);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* 하단 로그인 폼 카드 */
+.login-form-card {
+  width: 560px;
+  padding: 60px;
+  border-radius: 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
 
-.login-form h2 {
+.login-header h2 {
   margin-bottom: 12px;
-  color: #111827;
+  color: var(--title-color);
   font-size: 2.2rem;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 .login-subtitle {
   font-size: 16px;
-  color: #6b7280;
+  color: var(--subtitle-color);
   margin-bottom: 40px;
-  line-height: 1.5;
 }
 
-/* 3. 구글 버튼 래퍼 */
+/* 구글 로그인 버튼 래퍼 */
 .google-login-wrapper {
-  margin: 20px 0;
-  display: flex;
-  justify-content: center;
-  width: 100%;
+  margin-bottom: 30px;
+  min-height: 50px;
 }
 
-/* 4. 하단 보안 공지 */
 .login-footer {
-  margin-top: 20px;
-  padding-top: 24px;
-  border-top: 1px solid #f3f4f6;
   width: 100%;
+  padding-top: 24px;
+  border-top: 1px solid var(--footer-border);
 }
 
 .security-notice {
-  font-size: 13px;
-  color: #9ca3af;
-  line-height: 1.8;
-  word-break: keep-all;
-}
-
-/* 반응형 모바일 대응 */
-@media (max-width: 500px) {
-  .login-form {
-    width: 90%;
-    padding: 40px 20px;
-  }
+  font-size: 12px;
+  color: var(--notice-color);
 }

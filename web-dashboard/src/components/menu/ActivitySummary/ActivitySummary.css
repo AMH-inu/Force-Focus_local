@@ -7,7 +7,7 @@
   padding: 24px;
   box-sizing: border-box;
   background-color: var(--bg-main);
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   overflow: hidden; /* 전체 페이지 스크롤 방지 */
 }
 
@@ -26,22 +26,22 @@
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-main);
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .toggle-btn {
   padding: 8px 16px;
   border-radius: 8px;
-  background-color: #3b82f6 !important;
-  color: #ffffff;
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition: all 0.3s ease;
 }
 
 .toggle-btn:hover {
-  background-color: #2563eb !important;
+  background-color: #4338ca !important;
 }
 
 /* 본문 레이아웃 컨테이너 */
@@ -50,7 +50,7 @@
   gap: 20px;
   flex: 1; /* 남은 화면 높이를 모두 차지 */
   min-height: 0; /* 자식 요소의 높이 계산 오류 방지 */
-  transition: flex-direction 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 /* 가로/세로 레이아웃 대응 */
@@ -81,7 +81,7 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s ease;
   flex: 1; /* 1:1 비율로 가로 너비 차지 */
   height: 100%; /* 세로 화면을 전부 채우도록 설정 */
   box-sizing: border-box;
@@ -92,7 +92,7 @@
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-main);
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   flex-shrink: 0;
 }
 
@@ -126,7 +126,7 @@
   background-color: var(--bg-main);
   border-radius: 8px;
   border: 1px solid var(--border-color);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .report-item .label {
@@ -157,7 +157,7 @@
   background-color: var(--bg-main);
   border-radius: 8px;
   border-left: 4px solid #3b82f6;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .report-description strong {

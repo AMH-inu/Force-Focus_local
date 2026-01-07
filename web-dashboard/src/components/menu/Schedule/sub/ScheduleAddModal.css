@@ -64,7 +64,7 @@
   background-color: #fff;
   cursor: pointer;
   box-sizing: border-box;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: all 0.3s ease;
 }
 
 .modal-form select:focus {
@@ -127,7 +127,7 @@
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .cancel-btn:hover {
@@ -143,7 +143,7 @@
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .save-btn:hover {

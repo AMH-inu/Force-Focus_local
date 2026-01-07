@@ -1,21 +1,21 @@
 :root {
-  --menu-bg: #f8f4f4;
-  --menu-text: #111111;
-  --menu-hover-bg: #f3f4f6;
-  --menu-hover-text: #2563eb;
-  --menu-active-bg: #e0e7ff;
-  --menu-active-text: #1d4ed8;
-  --menu-border: #e5e7eb;
+  --menu-bg: #f9fafb; 
+  --menu-text: #374151;
+  --menu-hover-bg: #f1f5f9;
+  --menu-hover-text: #3b82f6;
+  --menu-active-bg: #eff6ff;
+  --menu-active-text: #2563eb;
+  --menu-border: #f1f5f9;
 }
 
 /* 다크 모드 */
 .dark-theme .menu-bar {
-  --menu-bg: #0b1220;
-  --menu-text: #f3f4f6;
+  --menu-bg: #111827;
+  --menu-text: #d1d5db;
   --menu-hover-bg: #1f2937;
   --menu-hover-text: #60a5fa;
-  --menu-active-bg: #1e3a8a;
-  --menu-active-text: #93c5fd;
+  --menu-active-bg: rgba(37, 99, 235, 0.15);
+  --menu-active-text: #60a5fa;
   --menu-border: #1f2937;
 }
 
@@ -29,10 +29,10 @@
   background-color: var(--menu-bg);
   color: var(--menu-text);
   border-right: 1px solid var(--menu-border);
-  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02); 
   display: flex;
   flex-direction: column;
-  transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 900;
 }
 
@@ -45,10 +45,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: 0 20px;
   border-bottom: 1px solid var(--menu-border);
-  background-color: var(--menu-hover-bg);
-  height: 50px;
+  background-color: transparent;
+  height: 60px;
   transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 
@@ -57,9 +57,10 @@
 }
 
 .menu-bar__title {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--menu-text);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #494a4c;
+  letter-spacing: 0.05em;
 }
 
 /* 토글 버튼 */
@@ -74,7 +75,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
 
 /* 접혔을 때 버튼 위치를 중앙으로 조정 */
@@ -92,11 +93,7 @@
 
 /* 메뉴 리스트 */
 .menu-bar__nav {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding-top: 6px;
+  padding: 12px 10px;
 }
 
 .menu-bar__list {
@@ -110,11 +107,13 @@
   color: var(--menu-text);
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+  gap: 14px;
+  padding: 12px 16px;
+  margin-bottom: 4px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-  border-bottom: 1px solid var(--menu-border);
+  transition: all 0.3s ease;
+  border-bottom: none;
 }
 
 .collapsed .menu-bar__item {
@@ -123,25 +122,25 @@
 }
 
 .menu-bar__icon {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
+  opacity: 0.8;
 }
 
 .menu-bar__label {
-  font-size: 1rem;
-  font-weight: 500;
-  user-select: none;
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
 .menu-bar__item:hover {
   background-color: var(--menu-hover-bg);
   color: var(--menu-hover-text);
+  transform: translateX(4px);
 }
 
 .menu-bar__item.active {
   background-color: var(--menu-active-bg);
   color: var(--menu-active-text);
-  font-weight: 700;
-  box-shadow: inset 4px 0 0 var(--menu-active-text);
+  box-shadow: none;
 }
 
 /* 접힘 상태 */
@@ -149,11 +148,35 @@
   display: none;
 }
 
+.menu-bar__item.active .menu-bar__icon {
+  opacity: 1;
+}
+
 /* 맨 아래쪽 푸터 영역 고정 */
 .menu-bar__footer {
   margin-top: auto;
-  border-top: 1px solid var(--border-color);
-  padding: 10px 0;
+  padding: 16px 10px;
+  border-top: 1px solid var(--menu-border);
+}
+
+/* 유저 프로필 아이템 스타일 */
+.user-profile-item {
+  background-color: var(--menu-hover-bg); /* 유저 카드는 배경색을 살짝 부여 */
+  border: none !important;
+  margin-bottom: 8px;
+}
+
+.menu-bar__user-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: opacity var(--transition-speed) ease;
+}
+
+/* 메뉴바가 접혔을 때 이메일과 상세 정보 숨기기 */
+.collapsed .menu-bar__user-info{
+  opacity: 0;
+  display: none;
 }
 
 /* 접혔을 때 푸터 아이템 중앙 정렬 */
@@ -178,5 +201,3 @@
 .theme-toggle-item:hover {
   color: var(--text-main);
 }
-
-

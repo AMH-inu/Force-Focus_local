@@ -7,7 +7,7 @@
   padding: 24px 32px;
   box-sizing: border-box;
   background-color: var(--bg-main);
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   overflow-y: auto;
 }
 
@@ -25,7 +25,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
   height: 100%; 
   max-height: calc(100vh - 104px);
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .dark-theme .overview-left {
@@ -72,7 +72,7 @@
   font-weight: 800;
   color: #111827;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: all 0.3s ease;
   flex: 0 0 auto;
 }
 
@@ -90,7 +90,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .dark-theme .schedule-area {
@@ -172,7 +172,7 @@
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .view-buttons button:hover {
@@ -193,7 +193,7 @@
   border: none;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .add-btn {
@@ -236,7 +236,7 @@
   overflow-y: auto;
   border: 1px solid #f3f4f6;
   border-radius: 6px;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .schedule-preview-content > div {
@@ -270,7 +270,7 @@
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .dark-theme .card {

@@ -66,7 +66,7 @@
   font-size: 0.95rem;
   background-color: #fff;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: all 0.3s ease;
 }
 
 .modal-form select:focus {
@@ -95,7 +95,7 @@
   font-size: 15px;
   font-family: inherit;
   box-sizing: border-box;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
 }
 
 .form-group input:focus,
@@ -129,7 +129,7 @@
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .save-btn {
@@ -140,7 +140,7 @@
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .save-btn:hover {

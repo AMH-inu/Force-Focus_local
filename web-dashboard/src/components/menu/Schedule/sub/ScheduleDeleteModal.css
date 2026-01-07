@@ -51,7 +51,7 @@
   padding: 14px 16px;
   margin-bottom: 10px;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition: all 0.3s ease;
   position: relative;
 }
 .delete-title-row {
@@ -153,7 +153,7 @@
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .delete-main-btn:disabled {
@@ -174,7 +174,7 @@
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .delete-cancel-btn:hover {

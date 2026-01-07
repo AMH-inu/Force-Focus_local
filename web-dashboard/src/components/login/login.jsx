@@ -1,53 +1,58 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import './login.css';
+import useMainStore from '../../MainStore.jsx';
+import logoIcon from '../layout/TitleBar/ForceFocus_icon.png'; 
 
 const Login = ({ onLoginSuccess }) => {
+    const isDarkMode = useMainStore((state) => state.isDarkMode);
     
-    // 구글 로그인 성공 핸들러
     const handleGoogleSuccess = (credentialResponse) => {
-        console.log("Google Login Success, Token:", credentialResponse.credential);
-        
-        // 1. 구글에서 받은 토큰을 로컬 스토리지에 저장
         localStorage.setItem('accessToken', credentialResponse.credential);
-        
-        // 2. 부모(App.jsx)에게 로그인 성공을 알림
         onLoginSuccess();
     };
 
     const handleGoogleError = () => {
-        console.log("Google Login Failed");
         alert("구글 로그인에 실패했습니다. 다시 시도해 주세요.");
     };
 
     return (
-        <div className="login-container">
-            <form className="login-form">
-                <div className="login-logo">
-                    <h2>Dashboard Login</h2>
-                    <p>서비스 이용을 위해 Google 계정으로 로그인해 주세요.</p>
+        <div className={`login-container ${isDarkMode ? 'dark-theme' : ''}`}>
+            <div className="login-wrapper"> {/* 두 카드를 세로로 정렬할 래퍼 */}
+                
+                {/* 첫 번째 행: 브랜드 카드 */}
+                <div className="brand-card">
+                    <img src={logoIcon} alt="ForceFocus Logo" className="login-brand-logo" />
+                    <h1 className="brand-name"><br></br>Force-Focus <br></br> Web Dashboard</h1>
                 </div>
 
-                {/* 구글 로그인 버튼만 단독 배치 */}
-                <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    marginTop: '30px',
-                    marginBottom: '20px' 
-                }}>
-                    <GoogleLogin
-                        onSuccess={handleGoogleSuccess}
-                        onError={handleGoogleError}
-                        useOneTap
-                    />
-                </div>
+                {/* 두 번째 행: 로그인 폼 카드 */}
+                <div className="login-form-card">
+                    <div className="login-header">
+                        <h2>Dashboard Login</h2>
+                        <p className="login-subtitle">서비스 이용을 위해 Google 계정으로 로그인해 주세요.</p>
+                    </div>
 
-                <div className="login-footer">
-                    <p style={{ fontSize: '12px', color: '#888' }}>
-                        안전한 로그인을 위해 Google OAuth 2.0 시스템을 사용합니다.
-                    </p>
+                    <div className="google-login-wrapper">
+                        <GoogleLogin
+                            onSuccess={handleGoogleSuccess}
+                            onError={handleGoogleError}
+                            theme={isDarkMode ? "filled_black" : "outline"}
+                            shape="pill"
+                            size="large"
+                            width="360px"
+                            useOneTap
+                        />
+                    </div>
+
+                    <div className="login-footer">
+                        <p className="security-notice">
+                            안전한 로그인을 위해 Google OAuth 2.0 시스템을 사용합니다.
+                        </p>
+                    </div>
                 </div>
-            </form>
+                
+            </div>
         </div>
     );
 };

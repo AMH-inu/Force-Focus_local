@@ -52,6 +52,13 @@ export default function MenuBar() {
 
       <div className="menu-bar__footer">
         <ul className="menu-bar__list">
+          <li className="menu-bar__item user-profile-item">
+            <span className="menu-bar__icon">👤</span>
+            <div className="menu-bar__user-info">
+              <span className="menu-bar__label">사용자 정보</span>
+            </div>
+          </li>
+
           <li className="menu-bar__item theme-toggle-item" onClick={toggleDarkMode}>
             <span className="menu-bar__icon">{isDarkMode ? '☀️' : '🌙'}</span>
             {isOpen && (

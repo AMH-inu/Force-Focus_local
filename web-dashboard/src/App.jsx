@@ -12,8 +12,19 @@ function App() {
   const { isHelpOpen, openHelp, setActiveMenu, isDarkMode } = useMainStore();
   
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('accessToken'));
+  const activeMenu = useMainStore((state) => state.activeMenu);
 
-  // [핵심 추가] 새로고침 시(컴포넌트 마운트 시) 무조건 Overview 메뉴로 이동
+  // activeMenu가 변경될 때마다 스크롤을 맨 위로 이동
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    const mainContent = document.querySelector('.main-content-area');
+    if (mainContent) {
+      mainContent.scrollTo(0, 0);
+    }
+  }, [activeMenu]);
+
+  // 새로고침 시(컴포넌트 마운트 시) 무조건 Overview 메뉴로 이동
   useEffect(() => {
     if (isLoggedIn && setActiveMenu) {
       setActiveMenu('Overview');
