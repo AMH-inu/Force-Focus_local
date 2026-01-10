@@ -89,6 +89,7 @@
   font-weight: 700;
   color: #1f2937;
   text-align: left;
+  transition: all 0.3s ease;
 }
 
 /* 구분선 (제목 아래 얇게 표시) */
@@ -115,13 +116,14 @@
   align-items: flex-start;
   position: relative;
   text-align: left;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .settings-item h3 {
   margin: 0 0 6px 0;
   font-size: 1.1rem;
   color: #1f2937;
+  transition: all 0.3s ease;
 }
 
 .settings-item p {

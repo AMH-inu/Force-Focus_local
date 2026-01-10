@@ -58,6 +58,7 @@
 
 .collapsed .menu-bar__title {
   display: none;
+  transition: all 0.3s ease;
 }
 
 .menu-bar__title {
@@ -65,6 +66,11 @@
   font-weight: 800;
   color: #494a4c;
   letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+}
+
+.dark-theme .menu-bar__title {
+  color: #cbd5e1;
 }
 
 /* 토글 버튼 */

@@ -20,6 +20,7 @@
   border-bottom: 1px solid #e5e7eb;
   padding-bottom: 20px;
   font-family: "Inter", "Pretendard", "Noto Sans KR", sans-serif;
+  transition: all 0.3s ease;
 }
 
 .header-text {
@@ -31,12 +32,14 @@
   font-size: 1.6rem;
   font-weight: 800;
   color: #111;
+  transition: all 0.3s ease;
 }
 
 .task-description {
   font-size: 0.95rem;
   color: #666;
   margin-top: 8px;
+  transition: all 0.3s ease;
 }
 
 /* 2. 그리드 레이아웃 및 세션 카드 */
@@ -69,6 +72,7 @@
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
+  transition: all 0.3s ease;
 }
 
 .card-divider {
@@ -76,6 +80,7 @@
   background-color: #f1f5f9;
   margin: 16px 0;
   flex-shrink: 0;
+  transition: all 0.3s ease;
 }
 
 .session-dot {
@@ -93,6 +98,7 @@
   gap: 12px;
   font-weight: 700;
   font-size: 1.25rem;
+  transition: all 0.3s ease;
 }
 
 /* 3. 다중 프로그램 경로 입력 리스트 UI */
