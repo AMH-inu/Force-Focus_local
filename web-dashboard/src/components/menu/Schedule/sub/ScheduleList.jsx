@@ -24,12 +24,15 @@ const ScheduleList = ({ schedules = [], onScheduleClick }) => {
 
   return (
     <div className="schedule-list-container">
+    <div className="list-header-section">
       <h2 className="list-title">일정 목록</h2>
+      <p className="list-subtitle">지금까지 추가한 일정을 조회할 수 있습니다.</p>
+    </div>
 
-      {sortedSchedules.length === 0 ? (
-        <div className="empty-list">등록된 일정이 없습니다.</div>
-      ) : (
-        <div className="schedule-card-list">
+    {sortedSchedules.length === 0 ? (
+      <div className="empty-list">등록된 일정이 없습니다.</div>
+    ) : (
+      <div className="schedule-card-list">
           {sortedSchedules.map((item) => (
             <div key={item.id} className="schedule-card"
               style={{ cursor: "pointer" }}

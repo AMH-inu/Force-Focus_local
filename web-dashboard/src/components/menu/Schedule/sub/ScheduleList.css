@@ -22,6 +22,17 @@
   transition: all 0.3s ease;
 }
 
+.list-subtitle {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.list-header-section {
+  margin-bottom: 16px;
+  padding-bottom: 4px;
+}
+
 /* 카드 리스트 그리드 */
 .schedule-card-list {
   display: grid;
@@ -34,23 +45,21 @@
 .schedule-card {
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 16px;
+  border-radius: 12px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 /* hover 시 효과 */
 .schedule-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
-  border-color: #93c5fd;
-  transform: translateY(-3px);
-  transition: all 0.3s ease;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  border-color: #4f46e5;
 }
 
 .card-header {

@@ -74,23 +74,21 @@ export default function ScheduleMonth({ schedules, onScheduleClick }) {
     <div className="month-view">
       {/* 상단 제목바 */}
       <div className="month-title-bar">
+        {/* 왼쪽/중앙: 내비게이션 및 제목 */}
         <div className="month-nav-group">
-          <button onClick={handlePrevMonth} className="nav-btn small">
-            ◀
-          </button>
-          <div className="month-title">
+          <button className="nav-btn" onClick={handlePrevMonth}>〈</button>
+          <h2 className="month-title">
             {year}년 {month + 1}월
-          </div>
-          <button onClick={handleNextMonth} className="nav-btn small">
-            ▶
-          </button>
+          </h2>
+          <button className="nav-btn" onClick={handleNextMonth}>〉</button>
         </div>
 
-        <button onClick={handleToday} className="today-btn-inline">
-          오늘
-        </button>
+        {/* 오른쪽: 오늘 버튼 단독 배치 */}
+        <div className="month-action-group">
+          <button className="today-btn-inline" onClick={handleToday}>오늘</button>
+        </div>
       </div>
-
+      
       {/* 달력 본문 */}
       <div className="month-grid">
         {["일", "월", "화", "수", "목", "금", "토"].map((d, i) => (

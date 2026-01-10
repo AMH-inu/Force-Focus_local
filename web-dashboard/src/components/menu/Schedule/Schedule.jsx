@@ -81,19 +81,19 @@ export default function Schedule() {
 
         <div className="action-buttons">
           <button className="add-btn" onClick={openAddModal}>
-            일정 추가
+            <span>+</span> 일정 추가
           </button>
           <button className="delete-btn" onClick={openDeleteModal}>
-            일정 삭제
+            <span>−</span> 일정 삭제
           </button>
         </div>
       </div>
 
       {/* 각 뷰 컴포넌트에 onScheduleClick 프롭으로 수정 함수 전달 */}
-      {viewMode === "day" && <ScheduleDay schedules={schedules} onScheduleClick={openEditModal} />}
-      {viewMode === "week" && <ScheduleWeek schedules={schedules} onScheduleClick={openEditModal} />}
-      {viewMode === "month" && <ScheduleMonth schedules={schedules} onScheduleClick={openEditModal} />}
-      {viewMode === "list" && <ScheduleList schedules={schedules} onScheduleClick={openEditModal} />}
+      {viewMode === "day" && <ScheduleDay key="day" schedules={schedules} onScheduleClick={openEditModal} />}
+      {viewMode === "week" && <ScheduleWeek key="week" schedules={schedules} onScheduleClick={openEditModal} />}
+      {viewMode === "month" && <ScheduleMonth key="month" schedules={schedules} onScheduleClick={openEditModal} />}
+      {viewMode === "list" && <ScheduleList key="list" schedules={schedules} onScheduleClick={openEditModal} />}
 
       {isAddOpen && <ScheduleAddModal onClose={closeAddModal} />}
       {isDeleteOpen && <ScheduleDeleteModal onClose={closeDeleteModal} />}

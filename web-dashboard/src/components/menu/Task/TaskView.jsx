@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './TaskView.css';
 import useMainStore from '../../../MainStore.jsx';
+
+// [수정] 기존 TrashIcon 컴포넌트 정의 삭제
 
 export default function TaskView() {
   const { isDarkMode, isDirty, setIsDirty } = useMainStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newSessionName, setNewSessionName] = useState('');
   
+  const fileInputRef = useRef(null);
+  const [activeSelection, setActiveSelection] = useState({ sessionId: null, index: null });
+
   const [sessions, setSessions] = useState(() => {
     const saved = localStorage.getItem('task-db-sessions');
     if (saved) {
@@ -17,37 +22,47 @@ export default function TaskView() {
       }));
     }
     return [
-      { id: 'coding', label: '코딩 작업', appPaths: ['Code.exe', 'GitKraken.exe'], isCustom: false },
-      { id: 'research', label: '자료 조사', appPaths: ['chrome.exe', 'Notion.exe'], isCustom: false },
+      { id: 'coding', label: '코딩 작업', appPaths: ['Code.exe'], isCustom: false },
+      { id: 'research', label: '자료 조사', appPaths: ['chrome.exe'], isCustom: false },
       { id: 'document', label: '문서 작성', appPaths: ['winword.exe'], isCustom: false },
       { id: 'presentation', label: '발표 자료 작성', appPaths: ['powerpnt.exe'], isCustom: false },
       { id: 'study', label: '학습 및 공부', appPaths: [], isCustom: false },
     ];
   });
 
-  // 데이터 변경 시 호출할 공통 함수
-  const markAsDirty = () => {
-    if (!isDirty) setIsDirty(true);
+  const markAsDirty = () => { if (!isDirty) setIsDirty(true); };
+
+  const handleBrowseClick = (sessionId, index) => {
+    setActiveSelection({ sessionId, index });
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
-  // [저장] 검증 로직
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && activeSelection.sessionId !== null) {
+      const fileName = file.name;
+      updatePathInput(activeSelection.sessionId, activeSelection.index, fileName);
+    }
+    e.target.value = '';
+  };
+
   const handleSave = () => {
     const hasEmptyPath = sessions.some(session => 
       session.appPaths.some(path => path.trim() === "")
     );
-
     if (hasEmptyPath) {
-      alert("입력되지 않은 프로그램 경로가 있습니다. 모든 빈 칸을 완성해 주세요.");
+      alert("입력되지 않은 프로그램이 있습니다. 모든 빈 칸을 완성해 주세요.");
       return;
     }
-
     localStorage.setItem('task-db-sessions', JSON.stringify(sessions));
     alert("설정된 프로그램 목록이 성공적으로 저장되었습니다.");
-    setIsDirty(false); // 저장 완료 시 전역 플래그 해제
+    setIsDirty(false);
   };
 
   const addPathInput = (sessionId) => {
-    markAsDirty(); // 변경 발생
+    markAsDirty();
     setSessions(sessions.map(s => {
       if (s.id === sessionId) {
         if ((s.appPaths || []).length >= 5) {
@@ -61,7 +76,7 @@ export default function TaskView() {
   };
 
   const updatePathInput = (sessionId, index, value) => {
-    markAsDirty(); // 변경 발생
+    markAsDirty();
     setSessions(sessions.map(s => {
       if (s.id === sessionId) {
         const newPaths = [...(s.appPaths || [])];
@@ -93,7 +108,7 @@ export default function TaskView() {
 
   const handleDeleteSession = (id) => {
     if (window.confirm("이 작업 유형을 삭제하시겠습니까?")) {
-      markAsDirty(); // 변경 발생
+      markAsDirty();
       setSessions(sessions.filter(s => s.id !== id));
     }
   };
@@ -111,6 +126,14 @@ export default function TaskView() {
 
   return (
     <div className={`task-container ${isDarkMode ? 'dark-theme' : ''}`}>
+      <input 
+        type="file" 
+        ref={fileInputRef} 
+        style={{ display: 'none' }} 
+        accept=".exe"
+        onChange={handleFileChange}
+      />
+
       <header className="task-header">
         <div className="header-text">
           <h2>🛠️ 작업 설정</h2>
@@ -120,7 +143,7 @@ export default function TaskView() {
         </div>
         <div className="header-actions">
           <button className="add-task-btn" onClick={() => setIsModalOpen(true)}>+ 새 목록 추가</button>
-          <button className="save-db-btn" onClick={handleSave}>저장</button>
+          <button className="save-db-btn" onClick={handleSave}>저장하기</button>
         </div>
       </header>
 
@@ -128,57 +151,74 @@ export default function TaskView() {
         {sessions.map((session) => (
           <div key={session.id} className="session-card">
             <div className="session-card-header">
-              <div className="session-info">{session.label}</div>
+              <div className="session-info">
+                <span className="session-dot"></span>
+                {session.label}
+              </div>
               {session.isCustom && (
-                <button className="delete-session-btn" onClick={() => handleDeleteSession(session.id)}>&times;</button>
+                <button className="delete-session-btn" onClick={() => handleDeleteSession(session.id)} title="전체 삭제">
+                  {/* [수정] 휴지통 인라인 SVG */}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                </button>
+              )}
+            </div>
+            
+            <div className="card-divider"></div>
+
+            <div className="path-input-list">
+              <label className="section-label">실행 앱 리스트</label>
+              {session.appPaths?.length > 0 ? (
+                <div className="scrollable-path-area">
+                  {session.appPaths.map((path, idx) => (
+                    <div key={idx} className="path-input-row">
+                      <div className="input-wrapper">
+                        <input 
+                          type="text" 
+                          value={path} 
+                          readOnly 
+                          placeholder="프로그램 선택"
+                        />
+                        {/* 찾아보기 버튼 -> 인라인 아이콘 (...) */}
+                        <button 
+                          className="inline-browse-btn" 
+                          onClick={() => handleBrowseClick(session.id, idx)}
+                          title="찾아보기"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                        </button>
+                      </div>
+                      <button 
+                        className="remove-path-btn-styled" 
+                        onClick={() => removePathInput(session.id, idx)}
+                        title="제거"
+                      >
+                        {/* 휴지통 인라인 SVG */}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="empty-path-message">등록된 프로그램이 없습니다.</div>
               )}
             </div>
 
-            {/* 작업 이름과 프로그램 목록 사이의 구분선 */}
-            <div className="card-divider"></div>
-            
-            <div className="path-input-list">
-                {session.appPaths?.length > 0 ? (
-                    <>
-                    <label>실행 앱 리스트</label>
-                    <div className="scrollable-path-area">
-                        {session.appPaths.map((path, idx) => (
-                        <div key={idx} className="path-input-row">
-                            <input 
-                            type="text" 
-                            value={path} 
-                            onChange={(e) => updatePathInput(session.id, idx, e.target.value)}
-                            placeholder="프로그램 이름 (예: Code.exe)"
-                            />
-                            <button className="remove-path-btn" onClick={() => removePathInput(session.id, idx)}>-</button>
-                        </div>
-                        ))}
-                    </div>
-                    </>
-                ) : (
-                    /* 프로그램이 하나도 없을 때 출력되는 안내 문구 */
-                    <div className="empty-path-message">
-                    강제 실행 프로그램을 추가해 주세요.
-                    </div>
-                )}
-              </div>
-              <button 
-                className="add-path-row-btn" 
-                onClick={() => addPathInput(session.id)}
-                disabled={session.appPaths.length >= 5}
-              >
-                {session.appPaths.length >= 5 ? "한도 초과 (5개)" : "+ 프로그램 추가"}
-              </button>
-            </div>
+            <button 
+              className="add-path-row-btn" 
+              onClick={() => addPathInput(session.id)}
+              disabled={session.appPaths.length >= 5}
+            >
+              {session.appPaths.length >= 5 ? "한도 초과 (최대 5개)" : "+ 프로그램 추가"}
+            </button>
+          </div>
         ))}
       </div>
 
-    {isModalOpen && (
+      {isModalOpen && (
         <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3>새 작업 추가</h3>
-              {/* 제목 바로 아래 다음 줄에 출력되도록 배치 */}
               <p>추가하고 싶은 작업 유형의 이름을 입력하세요.</p> 
             </div>
             <div className="modal-body">

@@ -85,17 +85,16 @@ export default function ScheduleDay({ schedules = [], onScheduleClick }) {
       <div className="day-header">
         {/* 좌측 영역: ◀, ▶, '오늘' 버튼을 모두 포함하며 동일 간격 배치 */}
         <div className="day-header-left">
-          <button className="nav-btn" onClick={handlePrevDay}>
-            ◀
-          </button>
-          <button className="nav-btn" onClick={handleNextDay}>
-            ▶
+          <button className="nav-btn" onClick={handlePrevDay} title="이전 날">
+            〈
           </button>
           <button className="today-btn" onClick={handleToday}>
             오늘
           </button>
+          <button className="nav-btn" onClick={handleNextDay} title="다음 날">
+            〉
+          </button>
         </div>
-
         {/* 중앙 영역: 제목만 배치 */}
         <div className="day-header-center">
           <span className={`day-title ${dayClass}`}>

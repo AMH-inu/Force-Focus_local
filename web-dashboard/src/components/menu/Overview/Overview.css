@@ -1,3 +1,8 @@
+:root {
+  --point-blue: #2563eb;
+  --point-blue-light: #4f46e5;
+}
+
 .overview-container {
   display: flex;
   flex-direction: column;
@@ -32,6 +37,7 @@
   background-color: var(--card-bg); /* 변수 적용 */
   border-color: var(--border-color);
   color: var(--text-main);
+  transition: all 0.3s ease;
 }
 
 .dark-theme .overview-today-date { color: var(--text-muted); }
@@ -44,6 +50,7 @@
   align-items: center;
   margin-bottom: 16px;
   width: 100%;
+  transition: all 0.3s ease;
 }
 
 /* 오늘 날짜 기본 스타일 */
@@ -77,7 +84,7 @@
 }
 
 .schedule-title-link:hover {
-  color: #4f46e5;
+  color: var(--point-blue);
 }
 
 /* 시간표 영역 (상자 전체) */
@@ -98,11 +105,6 @@
   border-color: var(--border-color);
 }
 
-/* 상자에 호버 시 시각적 피드백 */
-.schedule-area:hover {
-  border-color: #4f46e5;
-}
-
 /* 제목 스타일 */
 .schedule-area h3 {
   margin: 0 0 16px 0;
@@ -110,6 +112,7 @@
   font-weight: 800;
   color: #111827;
   pointer-events: none;
+  transition: all 0.3s ease;
 }
 
 .dark-theme .schedule-area h3, .schedule-area h4 { color: var(--text-main); }
@@ -186,6 +189,12 @@
   border-color: #4f46e5;
 }
 
+.dark-theme .view-buttons button.active {
+  background-color: #264c83;
+  color: #ffffff;
+  border-color: #264c83;
+}
+
 /* 추가/삭제 버튼 */
 .action-buttons button {
   padding: 8px 16px;
@@ -217,6 +226,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 .schedule-area h4 {
@@ -227,6 +237,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  transition: all 0.3s ease;
 }
 
 /* 미리보기 컴포넌트가 렌더링될 실제 영역 */
@@ -254,6 +265,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  transition: all 0.3s ease;
 }
 
 .overview-right .card {
@@ -283,7 +295,7 @@
 
 .card:hover {
   transform: translateY(-2px);
-  border-color: #4f46e5;
+  border-color: var(--point-blue);
 }
 
 .card h4 {
@@ -291,12 +303,14 @@
   font-size: 1.1rem;
   font-weight: 800;
   color: #111827;
+  transition: all 0.3s ease;
 }
 
 .card p {
   font-size: 1rem;
   color: #4b5563;
   line-height: 1.6;
+  transition: all 0.3s ease;
 }
 
 .feedback-highlight-container {
@@ -311,6 +325,7 @@
   font-weight: 800;
   color: #2563eb; /* 포인트 컬러 (블루) */
   letter-spacing: -0.5px;
+  transition: all 0.3s ease;
 }
 
 .dark-theme .feedback-main-title {
@@ -321,6 +336,7 @@
   font-size: 0.95rem;
   color: var(--text-muted);
   line-height: 1.5;
+  transition: all 0.3s ease;
 }
 
 .overview-graph-wrapper {
@@ -340,6 +356,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  transition: all 0.3s ease;
 }
 
 /* 반응형 처리 */

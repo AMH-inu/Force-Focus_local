@@ -7,7 +7,7 @@
   padding: 24px;
   box-sizing: border-box;
   background-color: var(--bg-main);
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
   overflow: hidden; /* 전체 페이지 스크롤 방지 */
 }
 
@@ -26,7 +26,7 @@
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-main);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
 }
 
 .toggle-btn {
@@ -37,7 +37,7 @@
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .toggle-btn:hover {
@@ -50,7 +50,6 @@
   gap: 20px;
   flex: 1; /* 남은 화면 높이를 모두 차지 */
   min-height: 0; /* 자식 요소의 높이 계산 오류 방지 */
-  transition: all 0.3s ease;
 }
 
 /* 가로/세로 레이아웃 대응 */
@@ -81,7 +80,7 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
   flex: 1; /* 1:1 비율로 가로 너비 차지 */
   height: 100%; /* 세로 화면을 전부 채우도록 설정 */
   box-sizing: border-box;
@@ -92,7 +91,7 @@
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-main);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
   flex-shrink: 0;
 }
 
@@ -126,23 +125,26 @@
   background-color: var(--bg-main);
   border-radius: 8px;
   border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .report-item .label {
   font-size: 0.8rem;
   color: var(--text-muted);
   font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 .report-item .value {
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--text-main);
+  transition: color 0.3s ease;
 }
 
 .report-item .value.highlight {
   color: #3b82f6;
+  transition: color 0.3s ease;
 }
 
 /* 보고서 텍스트 설명 */
@@ -157,11 +159,18 @@
   background-color: var(--bg-main);
   border-radius: 8px;
   border-left: 4px solid #3b82f6;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.report-description strong {
+.report-description p {
   color: var(--text-main);
+  transition: color 0.3s ease-in-out !important;
+}
+
+.dark-theme .toggle-btn { background-color: #4345a4 !important; color: white; }
+
+.dark-theme .report-description p {
+  color: var(--text-muted);
 }
 
 /* 반응형 모바일 대응 */

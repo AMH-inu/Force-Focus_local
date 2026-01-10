@@ -1,8 +1,19 @@
+.month-view,
+.month-cell,
+.day-number,
+.month-task,
+.month-title,
+.nav-btn,
+.today-btn-inline {
+  transition: all 0.3s ease !important;
+}
+
 .month-view {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: #f3f4f6;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 10px;
   padding: 12px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
@@ -159,33 +170,76 @@
 }
 
 /* 다크 모드 스타일링 */
-.dark-theme .month-view, .dark-theme .month-grid {
-  background: var(--bg-main);
-}
-
-.dark-theme .month-title {
-  color: var(--text-main);
-}
-
-.dark-theme .month-cell {
-  background: var(--card-bg);
+.dark-theme .month-view {
+  background-color: var(--bg-main) !important;
   border-color: var(--border-color);
 }
 
-.dark-theme .month-day-header {
-  background: var(--bg-sidebar);
+.dark-theme .month-grid {
+  background: var(--bg-main);
+}
+
+.dark-theme .month-title,
+.dark-theme .day-number:not(.faded-text) {
   color: var(--text-main);
 }
 
-.dark-theme .day-number { color: var(--text-main); }
-.dark-theme .faded-cell { background-color: #0f172a; }
-.dark-theme .month-task { background-color: #312e81; color: #e0e7ff; }
-
-.dark-theme .today-btn-inline {
-  background: #1f2937 !important;
-  color: #f3f4f6;
+.dark-theme .faded-text {
+  color: rgba(255, 255, 255, 0.2) !important;
 }
 
-.today-btn-inline:hover {
+.dark-theme .month-cell {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark-theme .month-day-header {
+  background-color: #171f2d !important; 
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+  font-weight: 700;
+}
+
+.dark-theme .month-day-header.sunday { color: #ef4444 !important; }
+.dark-theme .month-day-header.saturday { color: #3b82f6 !important; }
+
+.dark-theme .day-number { color: var(--text-main); }
+
+.dark-theme .faded-cell {
+  background-color: rgba(0, 0, 0, 0.25) !important; 
+  opacity: 1;
+}
+
+.dark-theme .nav-btn {
+  color: var(--text-muted);
+}
+
+.dark-theme .nav-btn:hover {
+  background-color: var(--border-color);
+  color: var(--text-main);
+}
+
+.dark-theme .month-task {
+  background-color: #1e3a8a;
+  color: #e0e7ff;
+}
+
+.dark-theme .month-task:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+.dark-theme .today-btn-inline {
+  background-color: var(--border-color) !important;
+  color: var(--text-main) !important;
+  border: none;
+}
+
+.dark-theme .today-cell {
+  border: 2px solid #4f46e5 !important;
+  background-color: rgba(79, 70, 229, 0.05) !important;
+}
+
+.dark-theme .today-btn-inline:hover {
   background: #374151 !important;
 }

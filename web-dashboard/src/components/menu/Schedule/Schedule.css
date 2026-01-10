@@ -16,12 +16,26 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
   margin-top: 8px;
 }
 
-.view-buttons button,
 .action-buttons button {
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.view-buttons button {
   border: none;
   border-radius: 6px;
   background-color: #e5e7eb;
@@ -42,8 +56,39 @@ button:active { transform: scale(0.97); }
   color: white;
 }
 
-.add-btn { background-color: #3b82f6; color: white; }
-.delete-btn { background-color: #ef4444; color: white; }
+.add-btn { background-color: #4f46e5 !important; color: white !important; }
+.add-btn:hover {
+  background-color: #4338ca !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.delete-btn { background-color: #fee2e2 !important; color: #ef4444 !important; border: 1px solid #fecaca !important; }
+.delete-btn:hover {
+  background-color: #ef4444 !important;
+  color: white !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+/* 탭 전환 애니메이션 정의 및 적용 [수정/추가 부분] */
+@keyframes schedulesFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Schedule.jsx에서 렌더링되는 각 뷰 컴포넌트(ScheduleDay, Week 등)는 
+   내부적으로 특정 클래스를 가지고 있거나 래퍼를 통해 이 애니메이션이 적용되어야 합니다.
+*/
+.schedule-container > :not(.schedule-header) {
+  animation: schedulesFadeIn 0.35s ease-out forwards;
+}
 
 .dark-theme .schedule-container {
   background: var(--bg-main);
@@ -60,5 +105,13 @@ button:active { transform: scale(0.97); }
   background-color: var(--text-muted);
 }
 
-.dark-theme .add-btn { background-color: var(--border-color); color: white; }
-.dark-theme .delete-btn { background-color: var(--border-color); color: white; }
+.dark-theme .add-btn { background-color: #4345a4 !important; color: white; }
+.dark-theme .delete-btn { 
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important; 
+}
+
+.dark-theme .delete-btn:hover {
+  background-color: #ba3636 !important;
+  color: white !important;
+}

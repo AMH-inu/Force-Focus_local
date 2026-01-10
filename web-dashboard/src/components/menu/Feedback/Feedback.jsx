@@ -1,22 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
+import useMainStore from "../../../MainStore";
 import "./Feedback.css"
 
 export default function Feedback() {
-  // 메뉴가 축소됨에 따라 탭 구성 변경
-  const [activeTab, setActiveTab] = useState("종합");
+  const feedbackViewMode = useMainStore((state) => state.feedbackViewMode);
+  const setFeedbackViewMode = useMainStore((state) => state.setFeedbackViewMode);
 
   const handleTabClick = (tabName) => {
-    setActiveTab(tabName);
+    setFeedbackViewMode(tabName);
   };
 
   const renderContent = () => {
-    switch (activeTab) {
+    switch (feedbackViewMode) {
     case "종합":
       return (
-        <div className="feedback-section active">
+        <div className="feedback-section active" key="total">
           <div className="section-header">
             <h3>종합 분석 보고서: <span className="highlight">효율적 사용자</span></h3>
-            <span className="badge">Success Profile</span>
+              <div className="badge-wrapper">
+                <span className="badge">Success Profile</span>
+              </div>
           </div>
           <p className="description">
             이번 세션 분석 결과, 귀하는 명확한 목표 의식을 바탕으로 핵심 도구를 제어하는 능력이 매우 탁월한 것으로 나타났습니다. 
@@ -46,15 +49,24 @@ export default function Feedback() {
                 <li><strong>높은 집중 근력 :</strong> 35분 연속 딥 워크는 상위 15%의 생산성 수치입니다.</li>
               </ul>
             </div>
+          <div className="detail-card improvement">
+            <h4>⚠️ 개선이 필요한 점</h4>
+              <ul>
+                <li><strong>소셜 미디어 전환 :</strong> 인지적 피로가 쌓이는 세션 후반부에 Discord 사용 시도가 집중됩니다.</li>
+                <li><strong>불규칙한 휴식 :</strong> 인계점에 도달한 후의 강제 휴식보다 계획적인 짧은 휴식이 필요합니다.</li>
+              </ul>
+            </div>
           </div>
         </div>
       );
       case "집중도":
         return (
-          <div className="feedback-section active">
+          <div className="feedback-section active" key="focus">
             <div className="section-header">
                 <h3>딥 워크(Deep Work) 및 집중 사이클 분석</h3>
-                <span className="badge">Cognitive Analysis</span>
+                <div className="badge-wrapper">
+                  <span className="badge">Cognitive Analysis</span>
+                </div>
             </div>
             <div className="stats-box centered">
                 <div className="stat-item">
@@ -89,10 +101,12 @@ export default function Feedback() {
         );
       case "피로도":
         return (
-          <div className="feedback-section active">
+          <div className="feedback-section active" key="fatigue">
             <div className="section-header">
                 <h3>디지털 피로도 및 방해 요소 관리</h3>
-                <span className="badge">Fatigue Management</span>
+                <div className="badge-wrapper">
+                  <span className="badge">Fatigue Management</span>
+                </div>
             </div>
             <p className="description">
                 이번 세션에서 <strong>총 13회</strong>의 방해 프로그램 실행 시도가 포착되었습니다. 특히 집중력이 저하되는 구간에서 발생하는 
@@ -142,7 +156,7 @@ export default function Feedback() {
           {["종합", "집중도", "피로도"].map((tab) => (
             <li 
               key={tab}
-              className={activeTab === tab ? "active" : ""} 
+              className={feedbackViewMode === tab ? "active" : ""} 
               onClick={() => handleTabClick(tab)}
             >
               {tab}

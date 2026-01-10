@@ -1,19 +1,25 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import "./ActivitySummary.css";
 import ActivityChart, { getActivitySummary } from "./ActivityChart";
+import useMainStore from "../../../MainStore";
 
 export default function ActivitySummary() {
-  const [isVertical, setIsVertical] = useState(false);
-  const toggleLayout = () => setIsVertical(!isVertical);
+  const activityViewMode = useMainStore((state) => state.activityViewMode);
+  const setActivityViewMode = useMainStore((state) => state.setActivityViewMode);
+
+  const toggleLayout = () => {
+    const nextMode = activityViewMode === "horizontal" ? "vertical" : "horizontal";
+    setActivityViewMode(nextMode);
+  };
 
   const summary = useMemo(() => getActivitySummary(), []);
 
   return (
-    <div className={`activity-summary ${isVertical ? "vertical" : "horizontal"}`}>
+    <div className={`activity-summary ${activityViewMode}`}>
       <div className="summary-header">
         <span className="summary-title">📊 주간 활동 요약 리포트</span>
         <button onClick={toggleLayout} className="toggle-btn">
-          {isVertical ? "가로로 보기" : "세로로 보기"}
+          {activityViewMode === "vertical" ? "가로로 보기" : "세로로 보기"}
         </button>
       </div>
 
