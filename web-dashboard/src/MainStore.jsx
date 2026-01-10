@@ -50,7 +50,9 @@ const useMainStore = create(
       isDarkMode: false,
       toggleDarkMode: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
     }),
-    { name: 'main-storage' }
+    { name: 'main-storage',
+      partialize: (state) => ({ isDarkMode: state.isDarkMode })
+    }
   )
 );
 
