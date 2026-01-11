@@ -208,7 +208,7 @@ export default function TaskView() {
         type="file" 
         ref={fileInputRef} 
         style={{ display: 'none' }} 
-        accept=".exe,.lnk,.app"
+        accept=".exe"
         onChange={handleFileChange} 
       />
 
