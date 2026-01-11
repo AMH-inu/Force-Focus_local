@@ -534,42 +534,41 @@ pub fn check_auth_status(
 
 
 
-// --- ['get_tasks' 커맨드 (빌드 오류 수정용) ---
-// MainView.tsx의 'fetch'를 'invoke'로 대체하기 위한 Rust 커맨드.
-// [!] (임시) handlers.ts의 'mockTasks' 데이터를 Rust에 하드코딩
+//  Task / LSN 데이터 연동
 #[command]
-pub fn get_tasks() -> Result<Vec<Task>, String> {
-    println!("Rust command 'get_tasks' invoked (returning mock data)");
+pub fn get_tasks(
+    storage_manager_mutex: State<'_, StorageManagerArcMutex>,
+) -> Result<Vec<Task>, String> {
+    let storage_manager = storage_manager_mutex.lock().map_err(|e| e.to_string())?;
 
-    // handlers.ts의 mockTasks 데이터를 Rust로 변환
-    let mock_tasks = vec![
-        Task {
-            id: "task-coding-session".to_string(),
-            user_id: "desktop-user-123".to_string(),
-            task_name: "코딩 세션 진행".to_string(),
-            description: "Force-Focus 데스크톱 앱 프런트엔드 개발".to_string(),
-            due_date: "2023-12-31T23:59:59Z".to_string(),
-            status: "active".to_string(),
-            target_executable: "vscode.exe".to_string(),
-            target_arguments: vec![],
-            created_at: "2023-10-26T10:00:00Z".to_string(),
-            updated_at: "2023-10-26T10:00:00Z".to_string(),
-        },
-        Task {
-            id: "task-report-writing".to_string(),
-            user_id: "desktop-user-123".to_string(),
-            task_name: "주간 보고서 작성".to_string(),
-            description: "지난 주 작업 내용 정리 및 보고서 초안 작성".to_string(),
-            due_date: "2023-11-03T18:00:00Z".to_string(),
-            status: "pending".to_string(),
-            target_executable: "word.exe".to_string(),
-            target_arguments: vec![],
-            created_at: "2023-10-25T09:00:00Z".to_string(),
-            updated_at: "2023-10-25T09:00:00Z".to_string(),
-        },
-    ];
+    // 1. 현재 로그인한 사용자 ID 확인 (격리)
+    let user_id = match storage_manager.load_auth_token().map_err(|e| e.to_string())? {
+        Some((_, _, _, uid)) => uid,
+        None => return Ok(vec![]), // 로그인 안 했으면 빈 목록 반환 (오프라인/게스트 정책에 따라 다름)
+    };
 
-    Ok(mock_tasks)
+    // 2. LSN에서 해당 유저의 Task 조회
+    let local_tasks = storage_manager.get_tasks_by_user(&user_id).map_err(|e| e.to_string())?;
+
+    println!("get_tasks: Found {} tasks for user {}", local_tasks.len(), user_id);
+
+    // 3. LocalTask -> Task (프론트엔드용) 변환
+    let tasks: Vec<Task> = local_tasks.into_iter().map(|t| Task {
+        id: t.id,
+        user_id: t.user_id,
+        task_name: t.task_name,
+        description: t.description.unwrap_or_default(),
+        // DB에는 날짜 필드가 없으므로 일단 빈 값 처리 (추후 필요하면 DB 마이그레이션)
+        due_date: "".to_string(), 
+        status: t.status,
+        target_executable: t.target_executable.unwrap_or_default(),
+        // "arg1 arg2" (String) -> ["arg1", "arg2"] (Vec<String>)
+        target_arguments: t.target_arguments
+            .map(|s| s.split_whitespace().map(|s| s.to_string()).collect())
+            .unwrap_or_default(),
+        created_at: "".to_string(),
+        updated_at: "".to_string(),
+    }).collect();
+
+    Ok(tasks)
 }
-
-

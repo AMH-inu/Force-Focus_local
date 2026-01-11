@@ -94,16 +94,16 @@ async fn trigger_schedule(
         }
     }
 
-    // B. 연결된 Task 정보 조회 (프로그램 실행을 위해)
-    let target_executable = if let Some(task_id) = &schedule.task_id {
+    // B. 연결된 Task 정보 조회 (실행 파일 + 인자)
+    let (target_executable, target_arguments) = if let Some(task_id) = &schedule.task_id {
         let storage = storage_state.lock().map_err(|e| e.to_string())?;
         if let Some(task) = storage.get_task_by_id(task_id)? {
-             task.target_executable
+             (task.target_executable, task.target_arguments)
         } else {
-            None
+            (None, None)
         }
     } else {
-        None
+        (None, None)
     };
 
     // C. [RPA] 프로그램 강제 실행
@@ -111,6 +111,17 @@ async fn trigger_schedule(
         if !exe_path.is_empty() {
             println!("Schedule Monitor: Launching program -> {}", exe_path);
             
+            let mut cmd = Command::new(&exe_path);
+            
+            // 인자가 있으면 공백 기준으로 분리하여 추가
+            if let Some(args_str) = target_arguments {
+                if !args_str.is_empty() {
+                    // 단순 공백 분리 (복잡한 escaping은 추후 고려)
+                    let args: Vec<&str> = args_str.split_whitespace().collect();
+                    cmd.args(args);
+                }
+            }
+
             // Rust Command를 사용하여 외부 프로세스 실행 (비동기 spawn)
             // 주의: 경로나 권한 문제로 실패할 수 있음 (에러 로그만 남김)
             match Command::new(&exe_path).spawn() {
