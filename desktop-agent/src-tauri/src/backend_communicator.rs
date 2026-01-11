@@ -4,23 +4,27 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use tauri::{command, State};
 
-// lib.rs에서 정의한 전역 상태 타입들
-use crate::{ActiveSessionInfo, InputStatsArcMutex, SessionStateArcMutex, StorageManagerArcMutex};
-
-use crate::Task;
-// StorageManager의 메서드를 호출하기 위해 모듈 import
-use crate::storage_manager;
-use crate::storage_manager::CachedEvent;
-
-use std::time::{SystemTime, UNIX_EPOCH}; // 세션 시작 시간 생성용
-use uuid::Uuid; // 로컬에서 임시 세션 ID 생성용
-
 // 백그라운드 동기화를 위해 tokio::spawn과 Arc, Mutex를 사용
 use std::sync::{Arc, Mutex};
 use tokio::spawn;
 
 use dotenv::dotenv;
 use std::env;
+
+// lib.rs에서 정의한 전역 상태 타입들
+use crate::{
+    ActiveSessionInfo,
+    SessionStateArcMutex,
+    StorageManagerArcMutex,
+    InputStatsArcMutex,
+    Task, 
+};
+
+// StorageManager의 메서드를 호출하기 위해 모듈 import
+use crate::storage_manager::{self, CachedEvent, LocalTask, LocalSchedule}; // LocalTask, LocalSchedule import
+
+use std::time::{SystemTime, UNIX_EPOCH}; // 세션 시작 시간 생성용
+use uuid::Uuid; // 로컬에서 임시 세션 ID 생성용
 
 // --- 1. 상수 정의 ---
 
@@ -74,6 +78,34 @@ struct EventData {
     window_title: String,
     activity_vector: serde_json::Value, 
 }
+
+
+// 백엔드 Task API 응답 모델 (Schema: TaskRead)
+#[derive(Debug, Deserialize)]
+struct ApiTask {
+    id: String,
+    user_id: String,
+    name: String,
+    description: Option<String>,
+    status: String,
+    target_executable: Option<String>,
+    target_arguments: Option<String>,
+    // created_at, due_date 등은 필요 시 추가
+}
+
+// 백엔드 Schedule API 응답 모델 (Schema: ScheduleRead)
+#[derive(Debug, Deserialize)]
+struct ApiSchedule {
+    id: String,
+    user_id: String,
+    task_id: Option<String>,
+    name: String,
+    start_time: String, // "HH:MM:SS" (Time 객체는 문자열로 옴)
+    end_time: String,
+    days_of_week: Vec<u8>,
+    is_active: bool,
+}
+
 
 // --- 3. BackendCommunicator 상태 정의 ---
 
@@ -140,6 +172,69 @@ impl BackendCommunicator {
             Err(format!("Server returned error {}: {}", status, text))
         }
     }
+
+    // ---  데이터 다운로드 (Fetch Only) ---
+    // StorageManager 의존성을 제거하고 데이터를 반환
+
+    /// 서버에서 Task 목록을 받아옴 (저장은 호출자가 수행)
+    pub async fn fetch_tasks(&self, token: &str) -> Result<Vec<LocalTask>, String> {
+        let url = format!("{}/tasks", get_api_base_url()); 
+        
+        let response = self.client.get(&url)
+            .bearer_auth(token)
+            .send()
+            .await
+            .map_err(|e| format!("Failed to fetch tasks: {}", e))?;
+
+        if response.status().is_success() {
+            let api_tasks: Vec<ApiTask> = response.json().await.map_err(|e| format!("JSON parse error: {}", e))?;
+            
+            let local_tasks: Vec<LocalTask> = api_tasks.into_iter().map(|t| LocalTask {
+                id: t.id,
+                user_id: t.user_id,
+                task_name: t.name,
+                description: t.description,
+                target_executable: t.target_executable,
+                target_arguments: t.target_arguments,
+                status: t.status,
+            }).collect();
+
+            Ok(local_tasks)
+        } else {
+            Err(format!("Server error (Tasks): {}", response.status()))
+        }
+    }
+
+    /// 서버에서 Schedule 목록을 받아옴 (저장은 호출자가 수행)
+    pub async fn fetch_schedules(&self, token: &str) -> Result<Vec<LocalSchedule>, String> {
+        let url = format!("{}/schedules", get_api_base_url());
+        
+        let response = self.client.get(&url)
+            .bearer_auth(token)
+            .send()
+            .await
+            .map_err(|e| format!("Failed to fetch schedules: {}", e))?;
+
+        if response.status().is_success() {
+            let api_schedules: Vec<ApiSchedule> = response.json().await.map_err(|e| format!("JSON parse error: {}", e))?;
+            
+            let local_schedules: Vec<LocalSchedule> = api_schedules.into_iter().map(|s| LocalSchedule {
+                id: s.id,
+                user_id: s.user_id,
+                task_id: s.task_id,
+                name: s.name,
+                start_time: s.start_time,
+                end_time: s.end_time,
+                days_of_week: s.days_of_week,
+                is_active: s.is_active,
+            }).collect();
+
+            Ok(local_schedules)
+        } else {
+            Err(format!("Server error (Schedules): {}", response.status()))
+        }
+    }
+
 }
 
 // --- 4. 이 모듈에 속한 Tauri 커맨드 정의 ---
