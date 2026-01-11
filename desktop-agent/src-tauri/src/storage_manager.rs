@@ -152,6 +152,7 @@ impl StorageManager {
                 id INTEGER PRIMARY KEY CHECK (id = 1), 
                 access_token TEXT NOT NULL,
                 refresh_token TEXT NOT NULL,
+                user_id TEXT NOT NULL,
                 user_email TEXT NOT NULL,
                 updated_at INTEGER NOT NULL
             )",
@@ -344,7 +345,7 @@ impl StorageManager {
         Ok(())
     }
 
-    pub fn save_auth_token(&self, access: &str, refresh: &str, email: &str) -> Result<(), String> {
+    pub fn save_auth_token(&self, access: &str, refresh: &str, email: &str, user_id: &str) -> Result<(), String> {
         let conn = self.conn.lock().map_err(|e| e.to_string())?;
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -352,24 +353,25 @@ impl StorageManager {
             .as_secs();
 
         conn.execute(
-            "INSERT OR REPLACE INTO auth_token (id, access_token, refresh_token, user_email, updated_at) 
-             VALUES (1, ?1, ?2, ?3, ?4)",
-            rusqlite::params![access, refresh, email, now],
+            "INSERT OR REPLACE INTO auth_token (id, access_token, refresh_token, user_email, user_id, updated_at)
+             VALUES (1, ?1, ?2, ?3, ?4, ?5)",
+            rusqlite::params![access, refresh, email, user_id, now],
         ).map_err(|e| e.to_string())?;
         Ok(())
     }
 
-    pub fn load_auth_token(&self) -> Result<Option<(String, String, String)>, String> {
+    pub fn load_auth_token(&self) -> Result<Option<(String, String, String, String)>, String> {
         let conn = self.conn.lock().map_err(|e| e.to_string())?;
         let mut stmt = conn
-            .prepare("SELECT access_token, refresh_token, user_email FROM auth_token WHERE id = 1")
+            .prepare("SELECT access_token, refresh_token, user_email, user_id FROM auth_token WHERE id = 1")
             .map_err(|e| e.to_string())?;
 
-        let result = stmt
-            .query_row([], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)))
-            .optional()
-            .map_err(|e| e.to_string())?;
-
+        let result = stmt.query_row([], |row| Ok((
+            row.get(0)?, 
+            row.get(1)?, 
+            row.get(2)?,
+            row.get(3)? // user_id
+        ))).optional().map_err(|e| e.to_string())?;
         Ok(result)
     }
 
@@ -404,7 +406,7 @@ impl StorageManager {
         Ok(())
     }
 
-    pub fn get_active_schedules(&self) -> Result<Vec<LocalSchedule>, String> {
+    pub fn get_active_schedules(&self, user_id: &str) -> Result<Vec<LocalSchedule>, String> {
         let conn = self.conn.lock().map_err(|e| e.to_string())?;
         let mut stmt = conn.prepare(
             "SELECT id, user_id, task_id, name, start_time, end_time, days_of_week, is_active 
@@ -469,6 +471,26 @@ impl StorageManager {
         }).optional().map_err(|e| e.to_string())?;
 
         Ok(result)
+    }
+
+    //  유저별 Task 목록 조회
+    pub fn get_tasks_by_user(&self, user_id: &str) -> Result<Vec<LocalTask>, String> {
+        let conn = self.conn.lock().map_err(|e| e.to_string())?;
+        let mut stmt = conn.prepare(
+            "SELECT id, user_id, task_name, description, target_executable, target_arguments, status 
+             FROM tasks WHERE user_id = ?1"
+        ).map_err(|e| e.to_string())?;
+
+        let rows = stmt.query_map([user_id], |row| {
+            Ok(LocalTask {
+                id: row.get(0)?, user_id: row.get(1)?, task_name: row.get(2)?, description: row.get(3)?,
+                target_executable: row.get(4)?, target_arguments: row.get(5)?, status: row.get(6)?,
+            })
+        }).map_err(|e| e.to_string())?;
+
+        let mut tasks = Vec::new();
+        for row in rows { tasks.push(row.map_err(|e| e.to_string())?); }
+        Ok(tasks)
     }
 }
 // --- 유닛 테스트 모듈 ---

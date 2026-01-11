@@ -245,13 +245,14 @@ pub fn login(
     access_token: String,
     refresh_token: String,
     user_email: String,
+    user_id: String,
     storage_manager_mutex: State<'_, StorageManagerArcMutex>,
 ) -> Result<(), String> {
     let storage_manager = storage_manager_mutex.lock().map_err(|e| e.to_string())?;
 
     // LSN에 토큰 저장
-    storage_manager.save_auth_token(&access_token, &refresh_token, &user_email)?;
-
+    storage_manager.save_auth_token(&access_token, &refresh_token, &user_email, &user_id)?;
+    
     println!("User logged in: {}", user_email);
     Ok(())
 }
@@ -331,7 +332,7 @@ pub async fn start_session(
         let token = storage_manager
             .load_auth_token()
             .unwrap_or(None) // 에러나면 무시 (오프라인/미로그인으로 간주)
-            .map(|t| t.0); // (access_token, refresh_token, email) 중 access_token만 추출
+            .map(|t| t.0); // (access_token, refresh_token, email, user_id) 중 access_token만 추출
 
         // 서버 응답을 기다리지 않고, 로컬에서 즉시 세션 정보를 생성
         let session_id = format!("local-{}", Uuid::new_v4());
@@ -521,7 +522,7 @@ pub fn check_auth_status(
     let token_data = storage_manager.load_auth_token().map_err(|e| e.to_string())?;
     
     // 토큰이 있으면 이메일 반환, 없으면 None
-    if let Some((_, _, email)) = token_data {
+    if let Some((_, _, email, _)) = token_data {
         println!("Auto-login: Found valid token for {}", email);
         Ok(Some(email))
     } else {

@@ -26,21 +26,32 @@ pub fn start_monitor_loop(app_handle: AppHandle) {
 
 /// 스케줄 확인 및 실행 로직
 async fn check_and_execute_schedules(app: &AppHandle) -> Result<(), String> {
-    // 1. 상태 및 DB 접근 준비
+    // 1. LSN 접근
     let storage_state = app.try_state::<StorageManagerArcMutex>()
         .ok_or("StorageManager state not found")?;
 
-    // 2. 활성화된 스케줄 조회
+    // 2. 현재 로그인한 사용자 ID 확인 (격리)
+    let user_id = {
+        let storage = storage_state.lock().map_err(|e| e.to_string())?;
+        
+        // load_auth_token 반환값: Option<(Access, Refresh, Email, UserID)>
+        match storage.load_auth_token()? {
+            Some((_, _, _, uid)) => uid, // user_id 추출
+            None => return Ok(()), // 로그인 정보가 없으면 스케줄 실행 안 함 (오프라인)
+        }
+    };
+
+    // 3. '내 ID'로 등록된 활성 스케줄만 조회
     let schedules = {
         let storage = storage_state.lock().map_err(|e| e.to_string())?;
-        storage.get_active_schedules()?
+        storage.get_active_schedules(&user_id)? 
     };
 
     if schedules.is_empty() {
         return Ok(());
     }
 
-    // 3. 현재 시간 확인 (Local Time 기준)
+    // 4. 현재 시간 확인 (Local Time 기준)
     let now = Local::now();
     let current_weekday = now.weekday().num_days_from_monday() as u8; // 0=Mon ~ 6=Sun
     let current_time_str = now.format("%H:%M").to_string(); // "14:00" 형식

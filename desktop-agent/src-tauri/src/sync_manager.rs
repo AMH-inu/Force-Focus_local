@@ -40,7 +40,7 @@ async fn process_sync(app: &AppHandle) -> Result<(), String> {
     let token = {
         let storage = storage_state.lock().map_err(|e| e.to_string())?;
         match storage.load_auth_token()? {
-            Some((access, _, _)) => access,
+            Some((access, _, _, _)) => access,
             None => return Ok(()), // 토큰 없음 = 오프라인 모드 (동기화 전체 스킵)
         }
     }; // 여기서 storage Lock 해제

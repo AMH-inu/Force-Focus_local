@@ -85,10 +85,11 @@ fn handle_deep_link(app: &AppHandle, url: &Url) {
     if is_scheme_valid && is_host_valid && is_path_valid {
         let query_pairs: std::collections::HashMap<_, _> = url.query_pairs().into_owned().collect();
         
-        if let (Some(access), Some(refresh), Some(email)) = (
+        if let (Some(access), Some(refresh), Some(email), Some(user_id)) = (
             query_pairs.get("access_token"),
             query_pairs.get("refresh_token"),
-            query_pairs.get("email")
+            query_pairs.get("email"),
+            query_pairs.get("user_id")
         ) {
             println!("Login detected for user: {}", email);
             
@@ -97,7 +98,7 @@ fn handle_deep_link(app: &AppHandle, url: &Url) {
                 // Mutex Lock
                 match storage_state.lock() {
                     Ok(storage) => {
-                        if let Err(e) = storage.save_auth_token(access, refresh, email) {
+                        if let Err(e) = storage.save_auth_token(access, refresh, email, user_id) {
                             eprintln!("CRITICAL: Failed to save auth token to LSN: {}", e);
                         } else {
                             println!("Auth token saved to LSN successfully.");
