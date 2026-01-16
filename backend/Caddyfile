@@ -1,5 +1,12 @@
 # .env에서 넘겨받은 도메인 (예: 34.xx.xx.xx.nip.io)
 {$DOMAIN_NAME} {
-    # 모든 요청을 FastAPI 백엔드 컨테이너의 8000 포트로 전달
-    reverse_proxy backend:8000
+    # API 요청은 기존 백엔드로 전달
+    handle_path /api/* {
+        reverse_proxy backend:8000
+    }
+
+    # 그 외 모든 요청은 새로 띄운 프론트엔드 컨테이너로 전달
+    handle {
+        reverse_proxy force-focus-frontend-manual:80
+    }
 }
